@@ -10,3 +10,6 @@ python manage.py collectstatic --no-input
 
 # Appliquer les migrations
 python manage.py migrate
+
+# Charger les données initiales (seulement si la base est vide)
+python manage.py load_initial_data
