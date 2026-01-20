@@ -1,0 +1,642 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un Mouvement - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .mouvement-container {
+        padding: 1rem 0;
+    }
+    
+    .form-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .form-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+    
+    .form-card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .form-card-body {
+        padding: 1.5rem;
+        background: white;
+    }
+    
+    .stock-info-card {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border: none;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .stock-info-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+    
+    .stock-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .stock-stat-item {
+        text-align: center;
+        padding: 0.75rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .stock-stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .stock-stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    
+    .alert-banner {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border: none;
+        border-left: 4px solid #ef4444;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        color: var(--primary-dark);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-group-enhanced {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-label .required {
+        color: #ef4444;
+        font-size: 0.875em;
+    }
+    
+    .form-control, .form-select, .form-textarea {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+    
+    .form-control:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+    
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .form-text {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .form-error {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .preview-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .preview-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .preview-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .preview-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    
+    .warning-card {
+        background: #fffbeb;
+        border: none;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-action {
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .mouvement-container {
+            padding: 0.5rem 0;
+        }
+        
+        .form-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .breadcrumb-custom {
+            font-size: 0.85rem;
+        }
+        
+        .form-card-body {
+            padding: 1.25rem;
+        }
+        
+        .stock-info-card {
+            padding: 1rem;
+        }
+        
+        .stock-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .preview-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .preview-item {
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+        }
+        
+        .form-control, .form-select, .form-textarea {
+            padding: 0.625rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-action {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group-enhanced {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .form-card-header {
+            padding: 1rem;
+        }
+        
+        .form-card-header h5 {
+            font-size: 1rem;
+        }
+        
+        .stock-stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stock-stat-item {
+            padding: 0.5rem;
+        }
+        
+        .preview-value {
+            font-size: 1.25rem;
+        }
+        
+        .warning-card {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Mode paysage mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .mouvement-container {
+            padding: 0.5rem 0;
+        }
+        
+        .form-card-body {
+            padding: 1rem;
+        }
+        
+        .form-section {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mouvement-container fade-in">
+    <!-- En-tête avec navigation -->
+    <div class="form-header">
+        <nav aria-label="breadcrumb" class="breadcrumb-custom mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'tableau_de_bord' %}">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'detail_entrepot' stock.entrepot.pk %}">
+                        <i class="bi bi-building"></i> {{ stock.entrepot.nom|truncatechars:20 }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="bi bi-arrow-left-right"></i> Nouveau mouvement
+                </li>
+            </ol>
+        </nav>
+        
+        <h2 class="mb-0">
+            <i class="bi bi-arrow-left-right text-success me-2"></i>
+            Enregistrer un mouvement
+        </h2>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="form-card">
+                <!-- En-tête de la carte -->
+                <div class="form-card-header">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="bi bi-clipboard-data me-2"></i>
+                        Informations du mouvement
+                    </h5>
+                </div>
+                
+                <!-- Corps du formulaire -->
+                <div class="form-card-body">
+                    <!-- Informations du stock -->
+                    <div class="stock-info-card">
+                        <div class="stock-info-header">
+                            <i class="bi bi-box"></i>
+                            Stock concerné
+                        </div>
+                        
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <span class="text-muted small">Entrepôt:</span>
+                                    <div class="fw-medium">{{ stock.entrepot.nom }}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="text-muted small">Localisation:</span>
+                                    <div class="small">{{ stock.entrepot.arrondissement.nom }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <span class="text-muted small">Culture:</span>
+                                    <div>
+                                        <span class="badge bg-success">
+                                            {{ stock.type_culture }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Statistiques du stock -->
+                        <div class="stock-stats-grid">
+                            <div class="stock-stat-item">
+                                <div class="stock-stat-value">{{ stock.quantite_actuelle|floatformat:0 }}</div>
+                                <div class="stock-stat-label">Stock actuel (kg)</div>
+                            </div>
+                            <div class="stock-stat-item">
+                                <div class="stock-stat-value">{{ stock.seuil_alerte|floatformat:0 }}</div>
+                                <div class="stock-stat-label">Seuil d'alerte (kg)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Alerte si stock bas -->
+                        {% if stock.est_en_alerte %}
+                            <div class="alert-banner mt-3">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-exclamation-triangle-fill text-danger fs-5 me-2"></i>
+                                    <div>
+                                        <strong class="text-danger">Attention !</strong><br>
+                                        <small>Ce stock est en dessous du seuil d'alerte ({{ stock.seuil_alerte }} kg).</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post" id="mouvementForm">
+                        {% csrf_token %}
+                        
+                        <!-- Erreurs globales -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger d-flex align-items-center mb-3">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>{{ form.non_field_errors }}</div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Section 1: Type et quantité -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-gear me-2"></i>Détails de l'opération
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <!-- Type de mouvement -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.type_mouvement.id_for_label }}" class="form-label">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                            {{ form.type_mouvement.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        {{ form.type_mouvement }}
+                                        {% if form.type_mouvement.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.type_mouvement.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            <strong>Entrée :</strong> Ajout de stock<br>
+                                            <strong>Sortie :</strong> Retrait de stock
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Quantité -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.quantite.id_for_label }}" class="form-label">
+                                            <i class="bi bi-123"></i>
+                                            {{ form.quantite.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            {{ form.quantite }}
+                                            <span class="input-group-text bg-light">kg</span>
+                                        </div>
+                                        {% if form.quantite.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.quantite.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            Quantité en kilogrammes
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section 2: Informations complémentaires -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-info-circle me-2"></i>Informations complémentaires
+                            </h6>
+                            
+                            <!-- Motif -->
+                            <div class="form-group-enhanced">
+                                <label for="{{ form.motif.id_for_label }}" class="form-label">
+                                    <i class="bi bi-chat-left-text"></i>
+                                    {{ form.motif.label }}
+                                    <span class="required">*</span>
+                                </label>
+                                {{ form.motif }}
+                                {% if form.motif.errors %}
+                                    <div class="form-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        {{ form.motif.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Exemples : "Récolte", "Vente", "Distribution", "Ajustement"
+                                </div>
+                            </div>
+                            
+                            <!-- Récolte associée -->
+                            <div class="form-group-enhanced">
+                                <label for="{{ form.recolte.id_for_label }}" class="form-label">
+                                    <i class="bi bi-link"></i>
+                                    {{ form.recolte.label }}
+                                </label>
+                                {{ form.recolte }}
+                                {% if form.recolte.errors %}
+                                    <div class="form-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        {{ form.recolte.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Associez à une récolte spécifique (optionnel)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Aperçu du nouveau stock -->
+                        <div class="preview-card">
+                            <h6 class="section-title mb-3">
+                                <i class="bi bi-calculator me-2"></i>Aperçu après mouvement
+                            </h6>
+                            
+                            <div class="preview-grid">
+                                <div class="preview-item">
+                                    <div class="preview-value">{{ stock.quantite_actuelle|floatformat:0 }}</div>
+                                    <div class="preview-label">Stock actuel</div>
+                                    <small class="text-muted">kg</small>
+                                </div>
+                                
+                                <div class="preview-item">
+                                    <div class="preview-value">
+                                        <i class="bi bi-arrow-left-right text-primary fs-4"></i>
+                                    </div>
+                                    <div class="preview-label">Opération</div>
+                                    <small class="text-muted">À définir</small>
+                                </div>
+                                
+                                <div class="preview-item">
+                                    <div class="preview-value" id="newStockPreview">???</div>
+                                    <div class="preview-label">Nouveau stock</div>
+                                    <small class="text-muted">kg</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Boutons d'action -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg py-3 fw-semibold">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Confirmer le mouvement
+                            </button>
+                            
+                            <a href="{% url 'detail_entrepot' stock.entrepot.pk %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Annuler et retourner
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Avertissement -->
+            <div class="warning-card mt-3">
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-info-circle text-warning fs-5 me-2"></i>
+                    <div>
+                        <strong>Important :</strong><br>
+                        <small class="text-muted">
+                            Cette opération modifiera immédiatement le stock disponible. 
+                            Vérifiez attentivement les informations avant validation.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Calcul du nouveau stock en temps réel
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('{{ form.type_mouvement.id_for_label }}');
+        const quantityInput = document.getElementById('{{ form.quantite.id_for_label }}');
+        const previewElement = document.getElementById('newStockPreview');
+        const currentStock = {{ stock.quantite_actuelle|floatformat:0 }};
+        
+        function updatePreview() {
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const type = typeSelect.value;
+            let newStock = currentStock;
+            
+            if (type === 'ENTREE') {
+                newStock = currentStock + quantity;
+            } else if (type === 'SORTIE') {
+                newStock = currentStock - quantity;
+            }
+            
+            if (newStock >= 0) {
+                previewElement.textContent = newStock.toFixed(0);
+                previewElement.style.color = newStock < {{ stock.seuil_alerte|floatformat:0 }} ? '#ef4444' : '#059669';
+            } else {
+                previewElement.textContent = 'Erreur';
+                previewElement.style.color = '#ef4444';
+            }
+        }
+        
+        typeSelect.addEventListener('change', updatePreview);
+        quantityInput.addEventListener('input', updatePreview);
+        
+        // Initialisation
+        updatePreview();
+        
+        // Validation du formulaire
+        document.getElementById('mouvementForm').addEventListener('submit', function(e) {
+            const quantity = parseFloat(quantityInput.value);
+            
+            if (!quantity || quantity <= 0) {
+                e.preventDefault();
+                alert('Veuillez entrer une quantité valide supérieure à 0');
+                quantityInput.focus();
+                return false;
+            }
+            
+            if (typeSelect.value === 'SORTIE' && quantity > currentStock) {
+                e.preventDefault();
+                alert('La quantité de sortie ne peut pas dépasser le stock actuel');
+                quantityInput.focus();
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}

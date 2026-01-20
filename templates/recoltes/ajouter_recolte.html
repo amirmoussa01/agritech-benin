@@ -1,0 +1,528 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter une Récolte - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        padding: 2rem 0;
+    }
+    
+    .form-header {
+        margin-bottom: 2rem;
+    }
+    
+    .form-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+    
+    .form-breadcrumb .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .form-breadcrumb .breadcrumb-item a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .form-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+    
+    .form-card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem 2rem;
+    }
+    
+    .form-card-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    .info-card {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border: none;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .info-card h6 {
+        color: var(--primary-dark);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .producteur-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .producteur-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+    
+    .producteur-details h5 {
+        margin-bottom: 0.25rem;
+        color: var(--dark-color);
+    }
+    
+    .producteur-details p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        color: var(--primary-dark);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e5e7eb;
+        position: relative;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 60px;
+        height: 2px;
+        background: var(--primary-color);
+    }
+    
+    .form-group-enhanced {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-label .required {
+        color: #ef4444;
+        font-size: 0.875em;
+    }
+    
+    .form-control, .form-select, .form-textarea {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+    
+    .form-control:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+    
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-text {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .form-error {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .photo-upload {
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        background: #f9fafb;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+    
+    .photo-upload:hover {
+        border-color: var(--primary-color);
+        background: #f0fdf4;
+    }
+    
+    .photo-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 4px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .alert-info-custom {
+        background-color: #e0f2fe;
+        border-left: 4px solid #0ea5e9;
+        color: #0369a1;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-action {
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .form-card-body {
+            padding: 1.5rem;
+        }
+        
+        .producteur-info {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container fade-in">
+    <!-- En-tête avec navigation -->
+    <div class="form-header">
+        <nav aria-label="breadcrumb" class="form-breadcrumb mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'tableau_de_bord' %}">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'liste_recoltes' %}">
+                        <i class="bi bi-basket2"></i> Récoltes
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="bi bi-plus-circle"></i> Nouvelle récolte
+                </li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-plus-circle text-success me-2"></i>
+                Enregistrer une récolte
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="form-card">
+                <!-- En-tête de la carte -->
+                <div class="form-card-header">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="bi bi-clipboard-data me-2"></i>
+                        Informations de la récolte
+                    </h5>
+                </div>
+                
+                <!-- Corps du formulaire -->
+                <div class="form-card-body">
+                    <!-- Message d'information -->
+                    <div class="alert-info-custom d-flex align-items-start">
+                        <i class="bi bi-info-circle fs-5 me-2"></i>
+                        <div>
+                            <strong>Bien remplir ce formulaire</strong><br>
+                            Tous les champs marqués d'un <span class="text-danger">*</span> sont obligatoires. 
+                            Assurez-vous de fournir des informations précises pour un suivi optimal.
+                        </div>
+                    </div>
+                    
+                    <!-- Informations du producteur -->
+                    <div class="info-card">
+                        <h6>
+                            <i class="bi bi-person-check"></i>
+                            Producteur responsable
+                        </h6>
+                        <div class="producteur-info">
+                            <div class="producteur-avatar">
+                                {{ producteur.nom|first|upper }}{{ producteur.prenom|first|upper }}
+                            </div>
+                            <div class="producteur-details">
+                                <h5>{{ producteur.nom }} {{ producteur.prenom }}</h5>
+                                <p>
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    {{ producteur.arrondissement.nom }}, {{ producteur.arrondissement.commune.nom }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" id="recolteForm">
+                        {% csrf_token %}
+                        
+                        <!-- Erreurs globales -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger d-flex align-items-center mb-4">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>{{ form.non_field_errors }}</div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Section 1: Identification -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-geo me-2"></i>Identification
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <!-- Parcelle -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.parcelle.id_for_label }}" class="form-label">
+                                            <i class="bi bi-map"></i>
+                                            {{ form.parcelle.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        {{ form.parcelle }}
+                                        {% if form.parcelle.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.parcelle.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            Sélectionnez la parcelle où la récolte a été effectuée
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Type de culture -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.type_culture.id_for_label }}" class="form-label">
+                                            <i class="bi bi-flower3"></i>
+                                            {{ form.type_culture.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        {{ form.type_culture }}
+                                        {% if form.type_culture.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.type_culture.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            Type de culture récoltée
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section 2: Mesures -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-rulers me-2"></i>Mesures
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <!-- Quantité -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.quantite.id_for_label }}" class="form-label">
+                                            <i class="bi bi-scale"></i>
+                                            {{ form.quantite.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            {{ form.quantite }}
+                                            <span class="input-group-text bg-light">kg</span>
+                                        </div>
+                                        {% if form.quantite.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.quantite.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            Quantité totale récoltée en kilogrammes
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Date de récolte -->
+                                <div class="col-md-6">
+                                    <div class="form-group-enhanced">
+                                        <label for="{{ form.date_recolte.id_for_label }}" class="form-label">
+                                            <i class="bi bi-calendar3"></i>
+                                            {{ form.date_recolte.label }}
+                                            <span class="required">*</span>
+                                        </label>
+                                        {{ form.date_recolte }}
+                                        {% if form.date_recolte.errors %}
+                                            <div class="form-error">
+                                                <i class="bi bi-exclamation-circle"></i>
+                                                {{ form.date_recolte.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            Date à laquelle la récolte a été effectuée
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section 3: Documents -->
+                        <div class="form-section">
+                            <h6 class="section-title">
+                                <i class="bi bi-files me-2"></i>Documents
+                            </h6>
+                            
+                            <!-- Photo -->
+                            <div class="form-group-enhanced">
+                                <label class="form-label">
+                                    <i class="bi bi-camera"></i>
+                                    {{ form.photo.label }}
+                                </label>
+                                <div class="photo-upload" id="photoUpload">
+                                    <div id="photoPreviewContainer">
+                                        <i class="bi bi-camera fs-1 text-muted mb-3"></i>
+                                        <p class="mb-2">Cliquez pour ajouter une photo</p>
+                                        <small class="text-muted">PNG, JPG jusqu'à 5MB</small>
+                                    </div>
+                                    {{ form.photo }}
+                                </div>
+                                {% if form.photo.errors %}
+                                    <div class="form-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        {{ form.photo.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Photo de la récolte (optionnel)
+                                </div>
+                            </div>
+                            
+                            <!-- Observations -->
+                            <div class="form-group-enhanced">
+                                <label for="{{ form.observations.id_for_label }}" class="form-label">
+                                    <i class="bi bi-chat-square-text"></i>
+                                    {{ form.observations.label }}
+                                </label>
+                                {{ form.observations }}
+                                {% if form.observations.errors %}
+                                    <div class="form-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        {{ form.observations.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Notes ou observations importantes sur cette récolte
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Boutons d'action -->
+                        <div class="d-grid gap-3 mt-5">
+                            <button type="submit" class="btn btn-success btn-lg py-3 fw-semibold">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Enregistrer la récolte
+                            </button>
+                            
+                            <a href="{% url 'liste_recoltes' %}" class="btn btn-outline-secondary btn-action">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Annuler et retourner
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Photo upload preview
+    document.getElementById('{{ form.photo.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const previewContainer = document.getElementById('photoPreviewContainer');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewContainer.innerHTML = `
+                    <img src="${e.target.result}" class="photo-preview" alt="Prévisualisation">
+                    <p class="mb-2">Photo sélectionnée</p>
+                    <small class="text-muted">Cliquez pour changer</small>
+                `;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Date picker enhancement
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('{{ form.date_recolte.id_for_label }}');
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+    
+    // Form validation
+    document.getElementById('recolteForm').addEventListener('submit', function(e) {
+        const quantite = document.getElementById('{{ form.quantite.id_for_label }}').value;
+        
+        if (quantite && parseFloat(quantite) <= 0) {
+            e.preventDefault();
+            alert('La quantité doit être supérieure à 0 kg');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

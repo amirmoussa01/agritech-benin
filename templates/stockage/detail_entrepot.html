@@ -1,0 +1,850 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails Entrepôt - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .entrepot-detail-container {
+        padding: 1rem 0;
+    }
+    
+    .detail-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+        font-size: 1.75rem;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .alert-banner {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border: none;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .info-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .info-card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .info-card-body {
+        padding: 1.5rem;
+        background: white;
+    }
+    
+    .entrepot-photo {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .info-item {
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .info-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .quick-actions-card {
+        border: 2px solid var(--primary-color);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .quick-actions-header {
+        background: var(--primary-light);
+        padding: 1rem 1.5rem;
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+    
+    .quick-actions-body {
+        padding: 1.5rem;
+        background: white;
+    }
+    
+    .stocks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stock-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: var(--shadow-sm);
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .stock-card.alert {
+        border-color: #fca5a5;
+        background: #fef2f2;
+    }
+    
+    .stock-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .stock-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .stock-title {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .stock-status {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+    
+    .stock-status.alert {
+        background: #fecaca;
+        color: #dc2626;
+    }
+    
+    .stock-status.ok {
+        background: #bbf7d0;
+        color: #065f46;
+    }
+    
+    .stock-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+    
+    .stock-stat {
+        text-align: center;
+    }
+    
+    .stock-stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        line-height: 1;
+    }
+    
+    .stock-stat-label {
+        font-size: 0.7rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .stock-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .capacity-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+    }
+    
+    .capacity-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .capacity-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .capacity-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .progress-container {
+        margin: 1.5rem 0;
+    }
+    
+    .progress-bar-custom {
+        height: 12px;
+        background: #e5e7eb;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.6s ease;
+    }
+    
+    .progress-fill.safe {
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+    
+    .progress-fill.warning {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+    
+    .progress-fill.danger {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+    
+    .capacity-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .capacity-stat {
+        text-align: center;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+    
+    .capacity-stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .capacity-stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    
+    .navigation-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .navigation-buttons {
+        display: grid;
+        gap: 0.75rem;
+    }
+    
+    .data-table-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        margin-top: 1.5rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table {
+        margin: 0;
+        min-width: 600px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .entrepot-detail-container {
+            padding: 0.5rem 0;
+        }
+        
+        .detail-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .info-card-header,
+        .quick-actions-header {
+            padding: 1rem;
+        }
+        
+        .info-card-body,
+        .quick-actions-body {
+            padding: 1.25rem;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stocks-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stock-card {
+            padding: 1rem;
+        }
+        
+        .capacity-card {
+            padding: 1.25rem;
+        }
+        
+        .capacity-value {
+            font-size: 2rem;
+        }
+        
+        .capacity-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .capacity-stat {
+            padding: 0.75rem;
+        }
+        
+        .navigation-card {
+            padding: 1.25rem;
+        }
+        
+        .entrepot-photo {
+            max-height: 200px;
+        }
+        
+        .stock-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .detail-header h2 {
+            font-size: 1.25rem;
+        }
+        
+        .alert-banner {
+            padding: 1rem;
+        }
+        
+        .info-card-header h5,
+        .quick-actions-header h5 {
+            font-size: 1rem;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+        }
+        
+        .stock-stats {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+        
+        .stock-stat {
+            text-align: left;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .capacity-stats {
+            grid-template-columns: 1fr;
+        }
+        
+        .capacity-value {
+            font-size: 1.75rem;
+        }
+        
+        .table {
+            min-width: 500px;
+        }
+        
+        .empty-state {
+            padding: 2rem 1rem;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .info-card-body,
+        .quick-actions-body {
+            padding: 1rem;
+        }
+        
+        .stock-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .stock-status {
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="entrepot-detail-container fade-in">
+    <!-- En-tête avec navigation -->
+    <div class="detail-header">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+            <div class="mb-2 mb-md-0">
+                <nav aria-label="breadcrumb" class="breadcrumb-custom mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'tableau_de_bord' %}">
+                                <i class="bi bi-speedometer2"></i> Tableau de bord
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'liste_entrepots' %}">
+                                <i class="bi bi-building"></i> Entrepôts
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            {{ entrepot.nom|truncatechars:20 }}
+                        </li>
+                    </ol>
+                </nav>
+                
+                <h2 class="mb-0">
+                    <i class="bi bi-building text-success me-2"></i>
+                    {{ entrepot.nom }}
+                </h2>
+            </div>
+            
+            <a href="{% url 'liste_entrepots' %}" class="btn btn-outline-success w-100 w-md-auto">
+                <i class="bi bi-arrow-left me-2"></i>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+    
+    <!-- Alertes de stock -->
+    {% if stocks_alerte %}
+        <div class="alert-banner">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-4 me-3"></i>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="alert-heading mb-0">
+                            Alertes de stock
+                        </h5>
+                        <span class="badge bg-danger">{{ stocks_alerte|length }}</span>
+                    </div>
+                    <p class="mb-3">Certains stocks nécessitent votre attention immédiate</p>
+                    
+                    <div class="row g-2">
+                        {% for stock in stocks_alerte %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="bg-white border border-danger rounded p-2">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <strong class="text-danger small">{{ stock.type_culture }}</strong>
+                                        <small class="text-danger">CRITIQUE</small>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="small">Stock: {{ stock.quantite_actuelle|floatformat:0 }} kg</span>
+                                        <a href="{% url 'ajouter_mouvement' stock.pk %}" 
+                                           class="btn btn-danger btn-sm">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="row">
+        <!-- Colonne principale -->
+        <div class="col-lg-8">
+            <!-- Informations de l'entrepôt -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Informations générales
+                    </h5>
+                </div>
+                
+                <div class="info-card-body">
+                    {% if entrepot.photo %}
+                        <img src="{{ entrepot.photo.url }}" 
+                             alt="Photo de {{ entrepot.nom }}"
+                             class="entrepot-photo">
+                    {% endif %}
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Nom de l'entrepôt</div>
+                            <div class="info-value">{{ entrepot.nom }}</div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Localisation</div>
+                            <div class="info-value">
+                                {{ entrepot.arrondissement.nom }}
+                                <div class="small text-muted">
+                                    {{ entrepot.arrondissement.commune.nom }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Adresse</div>
+                            <div class="info-value">
+                                <i class="bi bi-pin-map text-success me-1"></i>
+                                {{ entrepot.adresse|truncatechars:30 }}
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Contact</div>
+                            <div class="info-value">
+                                <i class="bi bi-person text-success me-1"></i>
+                                {{ entrepot.nom_gestionnaire }}
+                                <div class="small text-muted">
+                                    <i class="bi bi-telephone"></i> {{ entrepot.telephone_gestionnaire }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-muted small mt-3">
+                        <i class="bi bi-clock me-1"></i>
+                        Créé le {{ entrepot.date_creation|date:"d/m/Y" }}
+                        {% if entrepot.date_creation|date:"H:i" != "00:00" %}
+                            à {{ entrepot.date_creation|date:"H:i" }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gestion rapide des stocks -->
+            <div class="quick-actions-card">
+                <div class="quick-actions-header">
+                    <h6 class="mb-0 d-flex align-items-center">
+                        <i class="bi bi-lightning-fill me-2"></i>
+                        Gestion des stocks
+                    </h6>
+                </div>
+                
+                <div class="quick-actions-body">
+                    {% if stocks %}
+                        <div class="stocks-grid">
+                            {% for stock in stocks %}
+                                <div class="stock-card {% if stock.est_en_alerte %}alert{% endif %}">
+                                    <div class="stock-header">
+                                        <h6 class="stock-title">
+                                            <i class="bi bi-flower3 text-success"></i>
+                                            {{ stock.type_culture }}
+                                        </h6>
+                                        <span class="stock-status {% if stock.est_en_alerte %}alert{% else %}ok{% endif %}">
+                                            {% if stock.est_en_alerte %}ALERTE{% else %}OK{% endif %}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="stock-stats">
+                                        <div class="stock-stat">
+                                            <span class="text-muted small">Actuel:</span>
+                                            <span class="stock-stat-value {% if stock.est_en_alerte %}text-danger{% else %}text-success{% endif %}">
+                                                {{ stock.quantite_actuelle|floatformat:0 }} kg
+                                            </span>
+                                        </div>
+                                        <div class="stock-stat">
+                                            <span class="text-muted small">Seuil:</span>
+                                            <span class="stock-stat-value">{{ stock.seuil_alerte|floatformat:0 }} kg</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="stock-actions">
+                                        <a href="{% url 'ajouter_mouvement' stock.pk %}" 
+                                           class="btn btn-sm {% if stock.est_en_alerte %}btn-danger{% else %}btn-success{% endif %}">
+                                            <i class="bi bi-plus-circle me-1"></i>
+                                            Mouvement
+                                        </a>
+                                        <a href="{% url 'historique_mouvements' stock.pk %}" 
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-clock-history me-1"></i>
+                                            Historique
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="text-muted">
+                                <i class="bi bi-boxes fs-4 mb-2"></i>
+                                <p class="mb-0">Aucun stock configuré</p>
+                                <small>Contactez l'administration</small>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Tableau détaillé des stocks -->
+            {% if stocks %}
+                <div class="data-table-card" id="stocks">
+                    <div class="info-card-header">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                            <h5 class="mb-0 d-flex align-items-center">
+                                <i class="bi bi-boxes me-2"></i>
+                                Détails des stocks
+                            </h5>
+                            <span class="badge bg-white text-success">
+                                {{ stocks.count }} stock{{ stocks.count|pluralize }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Culture</th>
+                                        <th class="text-end">Quantité actuelle</th>
+                                        <th class="text-end">Seuil d'alerte</th>
+                                        <th class="text-center">Statut</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stock in stocks %}
+                                        <tr class="align-middle {% if stock.est_en_alerte %}table-danger{% endif %}">
+                                            <td>
+                                                <div class="fw-medium">
+                                                    <i class="bi bi-flower3 text-success me-1"></i>
+                                                    {{ stock.type_culture }}
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <strong class="{% if stock.est_en_alerte %}text-danger{% else %}text-success{% endif %}">
+                                                    {{ stock.quantite_actuelle|floatformat:0 }} kg
+                                                </strong>
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="text-muted">
+                                                    {{ stock.seuil_alerte|floatformat:0 }} kg
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if stock.est_en_alerte %}
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-exclamation-triangle"></i>
+                                                        <span class="d-none d-md-inline">ALERTE</span>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle"></i>
+                                                        <span class="d-none d-md-inline">NORMAL</span>
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    <a href="{% url 'ajouter_mouvement' stock.pk %}" 
+                                                       class="btn btn-sm btn-outline-success"
+                                                       title="Ajouter un mouvement">
+                                                        <i class="bi bi-plus-circle"></i>
+                                                    </a>
+                                                    <a href="{% url 'historique_mouvements' stock.pk %}" 
+                                                       class="btn btn-sm btn-outline-info"
+                                                       title="Voir l'historique">
+                                                        <i class="bi bi-clock-history"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Colonne latérale -->
+        <div class="col-lg-4">
+            <!-- Statistiques de capacité -->
+            <div class="capacity-card">
+                <div class="capacity-header">
+                    <div class="capacity-value">{{ entrepot.taux_remplissage|floatformat:1 }}%</div>
+                    <div class="capacity-label">Taux de remplissage</div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill 
+                            {% if entrepot.taux_remplissage > 90 %}danger
+                            {% elif entrepot.taux_remplissage > 70 %}warning
+                            {% else %}safe{% endif %}"
+                             style="width: {{ entrepot.taux_remplissage }}%">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="capacity-stats">
+                    <div class="capacity-stat">
+                        <div class="capacity-stat-value">{{ entrepot.capacite_max|floatformat:0 }}</div>
+                        <div class="capacity-stat-label">Capacité max (kg)</div>
+                    </div>
+                    <div class="capacity-stat">
+                        <div class="capacity-stat-value">{{ entrepot.stock_actuel|floatformat:0 }}</div>
+                        <div class="capacity-stat-label">Stock actuel (kg)</div>
+                    </div>
+                    <div class="capacity-stat">
+                        <div class="capacity-stat-value">
+                            {{ entrepot.capacite_max|floatformat:0|add:0|add:"-"|add:entrepot.stock_actuel|floatformat:0|add:0 }}
+                        </div>
+                        <div class="capacity-stat-label">Disponible (kg)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation rapide -->
+            <div class="navigation-card">
+                <h6 class="mb-3 d-flex align-items-center">
+                    <i class="bi bi-lightning me-2"></i>
+                    Navigation
+                </h6>
+                
+                <div class="navigation-buttons">
+                    <a href="{% url 'liste_stocks' %}" class="btn btn-outline-success">
+                        <i class="bi bi-boxes me-2"></i>
+                        Tous les stocks
+                    </a>
+                    <a href="{% url 'liste_entrepots' %}" class="btn btn-outline-success">
+                        <i class="bi bi-building me-2"></i>
+                        Autres entrepôts
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animation des cartes de stock
+    document.addEventListener('DOMContentLoaded', function() {
+        const stockCards = document.querySelectorAll('.stock-card');
+        stockCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.4s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+        
+        // Animation de la barre de progression
+        const progressBar = document.querySelector('.progress-fill');
+        if (progressBar) {
+            const width = progressBar.style.width;
+            progressBar.style.width = '0';
+            setTimeout(() => {
+                progressBar.style.width = width;
+            }, 300);
+        }
+        
+        // Gestion responsive des tooltips
+        function handleResize() {
+            if (window.innerWidth < 768) {
+                const tooltipElements = document.querySelectorAll('[title]');
+                tooltipElements.forEach(el => {
+                    el.removeAttribute('data-bs-toggle');
+                    el.removeAttribute('data-bs-placement');
+                });
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    });
+</script>
+{% endblock %}

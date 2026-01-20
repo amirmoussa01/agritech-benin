@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTech-Bénin - Plateforme de Gestion Agricole</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #28a745;
+            --dark-green: #1e7e34;
+            --light-green: #d4edda;
+            --orange: #fd7e14;
+            --yellow: #ffc107;
+            --blue: #17a2b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Navbar */
+        .navbar-custom {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            padding: 15px 0;
+        }
+        
+        .navbar-custom.scrolled {
+            padding: 10px 0;
+            background-color: rgba(255, 255, 255, 0.98) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            color: var(--dark-green);
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #333 !important;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: white;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1920&q=80');
+            background-repeat: no-repeat;
+            background-position: bottom;
+            background-size: cover;
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        .hero-image {
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+        }
+
+        /* Fallback image styling */
+        .gallery-item div[style*="background: linear-gradient"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-item div[style*="background: linear-gradient"] i {
+            font-size: 5rem;
+            color: white;
+            opacity: 0.7;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* Boutons */
+        .btn-custom {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-light-custom {
+            background-color: white;
+            color: var(--primary-green);
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+        
+        .btn-light-custom:hover {
+            background-color: transparent;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-outline-custom {
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: white;
+            color: var(--primary-green);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Stats */
+        .stats-section {
+            background-color: white;
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, var(--primary-green), white);
+            opacity: 0.1;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            margin: 10px;
+            border: 2px solid transparent;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary-green);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        /* Features */
+        .features-section {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-green);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            height: 100%;
+            background: white;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+            z-index: 2;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .feature-card .card-body {
+            padding: 40px 30px;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.2);
+        }
+        
+        .feature-card h4 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        /* SVG Illustrations */
+        .svg-illustration {
+            max-width: 100%;
+            height: auto;
+            opacity: 0.9;
+        }
+        
+        /* Testimonials */
+        .testimonials-section {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .testimonial-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .testimonial-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-5px);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            font-size: 5rem;
+            color: var(--primary-green);
+            opacity: 0.2;
+            font-family: serif;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        /* Gallery */
+        .gallery-section {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, #f8f9fa, white);
+        }
+        
+        .gallery-item {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%23ffffff" fill-opacity="0.1"/></svg>');
+            background-repeat: no-repeat;
+            background-position: top;
+            background-size: cover;
+            pointer-events: none;
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #1a1a2e;
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer h5 {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-green);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-icon:hover {
+            background: var(--primary-green);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            color: #aaa;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+            
+            .btn-custom {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero {
+                padding: 100px 0 60px;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'accueil' %}">
+                <i class="fas fa-seedling"></i> AgriTech-Bénin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#fonctionnalites">Fonctionnalités</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gallerie">Gallerie</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#temoignages">Témoignages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success text-white ms-2 px-4" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1>Digitalisez votre coopérative agricole</h1>
+                        <p>La plateforme complète pour gérer vos producteurs, récoltes et stocks au Bénin. Rejoignez la révolution agricole numérique !</p>
+                        <div class="hero-buttons d-flex gap-3 flex-wrap">
+                            <a href="{% url 'inscription_producteur' %}" class="btn btn-custom btn-light-custom">
+                                <i class="fas fa-user-plus"></i> S'inscrire gratuitement
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-custom btn-outline-custom">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        {% comment %} <!-- SVG Illustration de l'agriculture -->
+                        <svg class="svg-illustration" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Champ agricole -->
+                            <rect x="50" y="200" width="500" height="150" fill="#8BC34A" rx="10"/>
+                            
+                            <!-- Rangées de plantes -->
+                            <g fill="#4CAF50">
+                                <circle cx="100" cy="250" r="15"/>
+                                <circle cx="200" cy="250" r="15"/>
+                                <circle cx="300" cy="250" r="15"/>
+                                <circle cx="400" cy="250" r="15"/>
+                                <circle cx="500" cy="250" r="15"/>
+                                
+                                <circle cx="150" cy="300" r="15"/>
+                                <circle cx="250" cy="300" r="15"/>
+                                <circle cx="350" cy="300" r="15"/>
+                                <circle cx="450" cy="300" r="15"/>
+                            </g>
+                            
+                            <!-- Tractor -->
+                            <rect x="400" y="150" width="100" height="40" fill="#FF5722" rx="5"/>
+                            <circle cx="420" cy="190" r="20" fill="#795548"/>
+                            <circle cx="480" cy="190" r="20" fill="#795548"/>
+                            
+                            <!-- Soleil -->
+                            <circle cx="500" cy="50" r="40" fill="#FFC107"/>
+                            <g stroke="#FF9800" stroke-width="2">
+                                <line x1="500" y1="10" x2="500" y2="90"/>
+                                <line x1="460" y1="50" x2="540" y2="50"/>
+                                <line x1="475" y1="25" x2="525" y2="75"/>
+                                <line x1="525" y1="25" x2="475" y2="75"/>
+                            </g>
+                            
+                            <!-- Nuages -->
+                            <g fill="#E3F2FD">
+                                <ellipse cx="100" cy="100" rx="30" ry="20"/>
+                                <ellipse cx="130" cy="90" rx="25" ry="15"/>
+                                <ellipse cx="150" cy="110" rx="20" ry="18"/>
+                            </g>
+                            
+                            <!-- Producteur -->
+                            <circle cx="200" cy="150" r="20" fill="#FFCCBC"/>
+                            <rect x="185" y="170" width="30" height="50" fill="#4CAF50"/>
+                            <path d="M200 130 Q220 140 210 150" fill="none" stroke="#795548" stroke-width="3"/>
+                        </svg> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" id="statistiques">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <span class="stat-number">{{ total_producteurs|default:"500+" }}</span>
+                        <div class="stat-label">Producteurs actifs</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <span class="stat-number">{{ total_recoltes|default:"2K+" }}</span>
+                        <div class="stat-label">Récoltes enregistrées</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <span class="stat-number">{{ total_entrepots|default:"50+" }}</span>
+                        <div class="stat-label">Entrepôts gérés</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <span class="stat-number">{{ production_totale|default:"5000+"|floatformat:0 }}</span>
+                        <div class="stat-label">Tonnes produites</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="fonctionnalites">
+        <div class="container">
+            <div class="section-title">
+                <h2>Pourquoi choisir AgriTech-Bénin ?</h2>
+                <p>Une solution complète et intuitive pour digitaliser votre coopérative agricole</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Gestion des producteurs</h4>
+                            <p class="text-muted">Enregistrez et suivez tous vos producteurs avec leurs parcelles, cultures et performances détaillées.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <h4>Suivi des récoltes</h4>
+                            <p class="text-muted">Enregistrez les récoltes (maïs, soja, ananas) avec calcul automatique des rendements et analyses.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <h4>Gestion des stocks</h4>
+                            <p class="text-muted">Gérez vos entrepôts avec alertes automatiques pour les stocks bas et optimisation des espaces.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4>Statistiques avancées</h4>
+                            <p class="text-muted">Visualisez la production par zone, rendements, tendances et performances en temps réel.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h4>Interface mobile</h4>
+                            <p class="text-muted">Application responsive utilisable sur tous les appareils pour travailler partout, même hors ligne.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h4>Alertes intelligentes</h4>
+                            <p class="text-muted">Notifications SMS et email pour stocks bas, récoltes programmées et événements importants.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallerie">
+        <div class="container">
+            <div class="section-title">
+                <h2>Notre Galerie</h2>
+                <p>Découvrez nos coopératives partenaires et leurs réussites</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <!-- Image de parcelle de maïs -->
+                        {% load static %}
+                        <img src="{% static 'images/parcelle_mais.jpeg' %}" alt="Parcelle de Maïs" 
+                            class="img-fluid gallery-img"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; this.alt='Parcelle de maïs';">
+                        <div class="gallery-overlay">
+                            <h5 class="mb-1">Parcelle de Maïs</h5>
+                            <small>Coopérative de Savè</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <!-- Image d'entrepôt -->
+                        <img src="{% static 'images/entrepot.jpeg' %}" alt="Entrepôt Moderne" 
+                            class="img-fluid gallery-img"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; this.alt='Entrepôt agricole';">
+                        <div class="gallery-overlay">
+                            <h5 class="mb-1">Entrepôt Moderne</h5>
+                            <small>Stockage optimal</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <!-- Image de récolte -->
+                        <img src="{% static 'images/recolte_ananas.jpeg' %}" alt="Récolte d'Ananas" 
+                            class="img-fluid gallery-img"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508015926936-4c6b81b0015c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; this.alt='Récolte d\'ananas';">
+                        <div class="gallery-overlay">
+                            <h5 class="mb-1">Récolte d'Ananas</h5>
+                            <small>Production biologique</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Deuxième ligne d'images (optionnelle) -->
+            <div class="row mt-4">
+                <div class="col-lg-6">
+                    <div class="gallery-item">
+                        <!-- Image de tracteur -->
+                        <img src="#" alt="Tracteur agricole" 
+                            class="img-fluid gallery-img"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; this.alt='Tracteur agricole';">
+                        <div class="gallery-overlay">
+                            <h5 class="mb-1">Équipement Moderne</h5>
+                            <small>Mécanisation agricole</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="gallery-item">
+                        <!-- Image de producteurs -->
+                        <img src="{% static 'images/producteurs.jpeg' %}" alt="Producteurs heureux" 
+                            class="img-fluid gallery-img"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; this.alt='Groupes de producteurs';">
+                        <div class="gallery-overlay">
+                            <h5 class="mb-1">Producteurs Unis</h5>
+                            <small>Coopérative agricole</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section" id="temoignages">
+        <div class="container">
+            <div class="section-title">
+                <h2>Témoignages</h2>
+                <p>Ce que disent nos coopératives partenaires</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-green), var(--dark-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                                AK
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Amadou K.</h5>
+                                <small class="text-muted">Président Coopérative</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Grâce à AgriTech-Bénin, nous avons augmenté notre productivité de 40%. La gestion des stocks est maintenant optimale."</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--blue), #0d6efd); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                                FS
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Fatou S.</h5>
+                                <small class="text-muted">Gestionnaire d'entrepôt</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Les alertes automatiques m'évitent les ruptures de stock. L'interface est intuitive et facile à utiliser même sur mobile."</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--orange), #fd7e14); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
+                                KA
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Koffi A.</h5>
+                                <small class="text-muted">Producteur de maïs</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Je peux maintenant suivre mes rendements en temps réel et prendre de meilleures décisions pour mes cultures."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content text-center">
+                <h2 class="display-5 fw-bold mb-4">Prêt à moderniser votre coopérative ?</h2>
+                <p class="lead mb-4">Rejoignez les centaines de producteurs qui ont déjà fait le choix de la digitalisation</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'inscription_producteur' %}" class="btn btn-light btn-lg px-5 py-3" style="border-radius: 50px; font-weight: 600;">
+                        <i class="fas fa-rocket me-2"></i> Commencer gratuitement
+                    </a>
+                    <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-5 py-3" style="border-radius: 50px; font-weight: 600;">
+                        <i class="fas fa-phone-alt me-2"></i> Nous contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <h5><i class="fas fa-seedling me-2"></i> AgriTech-Bénin</h5>
+                    <p class="text-muted mt-3">La solution digitale innovante pour moderniser et optimiser la gestion des coopératives agricoles au Bénin.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-5">
+                    <h5>Liens rapides</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+                        <li><a href="#temoignages">Témoignages</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5>Services</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'inscription_producteur' %}">Inscription Producteur</a></li>
+                        <li><a href="{% url 'login' %}">Espace Producteur</a></li>
+                        <li><a href="{% url 'login' %}">Espace Gestionnaire</a></li>
+                        <li><a href="{% url 'login' %}">Espace Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5>Contact</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Cotonou, Bénin</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@agritech-benin.org</li>
+                        <li><i class="fas fa-phone me-2"></i> +229 XX XX XX XX</li>
+                        <li><i class="fas fa-clock me-2"></i> Lun - Ven: 8h - 18h</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="mb-0">&copy; 2026 AgriTech-Bénin. Tous droits réservés. | <a href="#">Politique de confidentialité</a> | <a href="#">Conditions d'utilisation</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-custom');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Animate stats counters
+        function animateCounter(element, target, duration) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+        
+        // Initialize counters when in viewport
+        function initCounters() {
+            const statCards = document.querySelectorAll('.stat-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statNumber = entry.target.querySelector('.stat-number');
+                        const target = parseInt(statNumber.textContent.replace(/[^0-9]/g, ''));
+                        if (!isNaN(target)) {
+                            animateCounter(statNumber, target, 2000);
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statCards.forEach(card => observer.observe(card));
+        }
+        // Ajout de script pour image
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preload images for better performance
+            const imageUrls = [
+                "{% static 'images/parcelle_mais.jpeg' %}",
+                "{% static 'images/entrepot.jpeg' %}",
+                "{% static 'images/recolte_ananas.jpeg' %}",
+                "#",
+                "{% static 'images/producteurs.jpeg' %}"
+            ];
+            
+            imageUrls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+            
+            // Lazy loading for gallery images
+            const galleryImages = document.querySelectorAll('.gallery-img');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-src') || img.src;
+                        if (src) {
+                            img.src = src;
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '50px 0px' });
+            
+            galleryImages.forEach(img => imageObserver.observe(img));
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initCounters();
+        });
+    </script>
+</body>
+</html>

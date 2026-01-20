@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription Producteur - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: 80vh;
+        padding: 2rem 0;
+    }
+    
+    .register-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+    }
+    
+    .register-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        padding: 0.5rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .register-icon {
+        background: rgba(255, 255, 255, 0.2);
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2rem;
+    }
+    
+    .register-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    .section-title {
+        color: var(--primary-dark);
+        font-weight: 600;
+        margin: 1.5rem 0 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--primary-light);
+        position: relative;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 60px;
+        height: 2px;
+        background: var(--primary-color);
+    }
+    
+    .form-group-enhanced {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-label .required {
+        color: #ef4444;
+        font-size: 0.875em;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .form-text {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .form-error {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .password-strength {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .password-strength-meter {
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+        background: var(--primary-color);
+    }
+    
+    .photo-upload {
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        background: #f9fafb;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .photo-upload:hover {
+        border-color: var(--primary-color);
+        background: #f0fdf4;
+    }
+    
+    .photo-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 4px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .alert-info-custom {
+        background-color: #e0f2fe;
+        border-left: 4px solid #0ea5e9;
+        color: #0369a1;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="register-card">
+                <!-- En-tête -->
+                <div class="register-header">
+                    <div class="register-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h2 class="mb-2">Rejoignez AgriTech-Bénin</h2>
+                    <p class="text-white-50 mb-0">Créez votre compte producteur en quelques étapes</p>
+                </div>
+                
+                <!-- Corps -->
+                <div class="register-body">
+                    <!-- Message info -->
+                    <div class="alert-info-custom d-flex align-items-start mb-4">
+                        <i class="bi bi-info-circle fs-5 me-2"></i>
+                        <div>
+                            <strong>Bienvenue producteur !</strong><br>
+                            Remplissez ce formulaire pour rejoindre la coopérative AgriTech-Bénin et bénéficier de tous nos services.
+                        </div>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" id="registrationForm">
+                        {% csrf_token %}
+                        
+                        <!-- Erreurs globales -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>{{ form.non_field_errors }}</div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Section 1: Compte -->
+                        <div class="section-title">
+                            <i class="bi bi-shield-lock me-2"></i>Informations de connexion
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Nom d'utilisateur -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person"></i>
+                                        {{ form.username.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.username.errors }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        Choisissez un nom d'utilisateur unique pour votre connexion
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        <i class="bi bi-envelope"></i>
+                                        {{ form.email.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.email.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Mot de passe -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                        <i class="bi bi-key"></i>
+                                        {{ form.password1.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.password1 }}
+                                    <div class="password-strength">
+                                        <div class="password-strength-meter" id="passwordStrength"></div>
+                                    </div>
+                                    {% if form.password1.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.password1.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Confirmation -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                        <i class="bi bi-key-fill"></i>
+                                        {{ form.password2.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.password2.errors }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        Confirmez votre mot de passe
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section 2: Informations personnelles -->
+                        <div class="section-title">
+                            <i class="bi bi-person-vcard me-2"></i>Informations personnelles
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Nom -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.nom.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person-badge"></i>
+                                        {{ form.nom.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.nom }}
+                                    {% if form.nom.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.nom.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Prénom -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.prenom.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person-badge"></i>
+                                        {{ form.prenom.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.prenom }}
+                                    {% if form.prenom.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.prenom.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Téléphone -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.telephone.id_for_label }}" class="form-label">
+                                        <i class="bi bi-telephone"></i>
+                                        {{ form.telephone.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.telephone }}
+                                    {% if form.telephone.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.telephone.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Arrondissement -->
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
+                                    <label for="{{ form.arrondissement.id_for_label }}" class="form-label">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ form.arrondissement.label }}
+                                        <span class="required">*</span>
+                                    </label>
+                                    {{ form.arrondissement }}
+                                    {% if form.arrondissement.errors %}
+                                        <div class="form-error">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ form.arrondissement.errors }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        Sélectionnez votre zone d'activité agricole
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Photo -->
+                        <div class="form-group-enhanced">
+                            <label class="form-label">
+                                <i class="bi bi-camera"></i>
+                                {{ form.photo.label }}
+                            </label>
+                            <div class="photo-upload" id="photoUpload">
+                                <div id="photoPreviewContainer">
+                                    <i class="bi bi-camera fs-1 text-muted mb-3"></i>
+                                    <p class="mb-2">Cliquez pour ajouter une photo</p>
+                                    <small class="text-muted">PNG, JPG jusqu'à 5MB</small>
+                                </div>
+                                {{ form.photo }}
+                            </div>
+                            {% if form.photo.errors %}
+                                <div class="form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ form.photo.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Boutons -->
+                        <div class="d-grid gap-3 mt-5">
+                            <button type="submit" class="btn btn-success btn-lg py-3 fw-semibold">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Créer mon compte producteur
+                            </button>
+                            
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Retour à la connexion
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Footer -->
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Vos données sont sécurisées conformément à notre politique de confidentialité
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Photo upload preview
+    document.getElementById('{{ form.photo.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const previewContainer = document.getElementById('photoPreviewContainer');
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewContainer.innerHTML = `
+                    <img src="${e.target.result}" class="photo-preview" alt="Prévisualisation">
+                    <p class="mb-2">Photo sélectionnée</p>
+                    <small class="text-muted">Cliquez pour changer</small>
+                `;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Password strength meter
+    document.getElementById('{{ form.password1.id_for_label }}').addEventListener('input', function(e) {
+        const password = e.target.value;
+        const strengthMeter = document.getElementById('passwordStrength');
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 25;
+        if (/[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password)) strength += 25;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+        
+        strengthMeter.style.width = strength + '%';
+        strengthMeter.style.backgroundColor = 
+            strength >= 75 ? '#10b981' : 
+            strength >= 50 ? '#f59e0b' : '#ef4444';
+    });
+    
+    // Form validation
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const password1 = document.getElementById('{{ form.password1.id_for_label }}').value;
+        const password2 = document.getElementById('{{ form.password2.id_for_label }}').value;
+        
+        if (password1 !== password2) {
+            e.preventDefault();
+            alert('Les mots de passe ne correspondent pas');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,554 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails Récolte - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-container {
+        padding: 2rem 0;
+    }
+    
+    .detail-header {
+        margin-bottom: 2rem;
+    }
+    
+    .detail-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .detail-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem 2rem;
+    }
+    
+    .detail-card-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .info-item {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-value {
+        font-size: 1.5rem;
+        color: var(--dark-color);
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .info-value.small {
+        font-size: 1.25rem;
+    }
+    
+    .info-unit {
+        font-size: 1rem;
+        color: var(--primary-dark);
+        font-weight: 500;
+    }
+    
+    .photo-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .photo-container {
+        padding: 1.5rem;
+        text-align: center;
+        background: #f8fafc;
+    }
+    
+    .photo-img {
+        max-width: 100%;
+        max-height: 500px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .sidebar-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .sidebar-card-header {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .person-card {
+        text-align: center;
+    }
+    
+    .person-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .person-avatar.with-photo {
+        background: none;
+        overflow: hidden;
+        border: 4px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .person-avatar.with-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .person-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .person-contact {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 0;
+    }
+    
+    .person-contact li {
+        padding: 0.5rem 0;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .person-contact li:last-child {
+        border-bottom: none;
+    }
+    
+    .parcelle-card ul,
+    .stats-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .parcelle-card li,
+    .stats-card li {
+        padding: 0.75rem 0;
+        color: #4b5563;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .parcelle-card li:last-child,
+    .stats-card li:last-child {
+        border-bottom: none;
+    }
+    
+    .parcelle-card .value,
+    .stats-card .value {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+    
+    .observations-card {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border: none;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .metadata {
+        font-size: 0.875rem;
+        color: #6b7280;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-action-group {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .detail-card-body {
+            padding: 1.5rem;
+        }
+        
+        .btn-action-group {
+            flex-direction: column;
+        }
+        
+        .btn-action-group .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-container fade-in">
+    <!-- En-tête avec navigation -->
+    <div class="detail-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <nav aria-label="breadcrumb" class="breadcrumb-custom mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'tableau_de_bord' %}">
+                                <i class="bi bi-speedometer2"></i> Tableau de bord
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'liste_recoltes' %}">
+                                <i class="bi bi-basket2"></i> Récoltes
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="bi bi-info-circle"></i> Détails
+                        </li>
+                    </ol>
+                </nav>
+                
+                <h2 class="mb-0">
+                    <i class="bi bi-info-circle text-success me-2"></i>
+                    Détails de la récolte
+                </h2>
+            </div>
+            
+            <div class="btn-action-group">
+                <a href="{% url 'liste_recoltes' %}" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Retour à la liste
+                </a>
+                {% if is_producteur or user.is_superuser %}
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>
+                        Modifier
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Colonne principale -->
+        <div class="col-lg-8">
+            <!-- Carte principale -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 d-flex align-items-center">
+                            <i class="bi bi-clipboard-data me-2"></i>
+                            Récolte n°{{ recolte.id }}
+                        </h5>
+                        <span class="badge bg-white text-success fs-6">
+                            {{ recolte.date_recolte|date:"d/m/Y" }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detail-card-body">
+                    <!-- Grille d'informations principales -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="bi bi-flower3"></i>
+                                Type de culture
+                            </div>
+                            <h3 class="info-value">
+                                {{ recolte.type_culture }}
+                            </h3>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="bi bi-scale"></i>
+                                Quantité récoltée
+                            </div>
+                            <h3 class="info-value">
+                                {{ recolte.quantite|floatformat:2 }}
+                                <span class="info-unit">kg</span>
+                            </h3>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                Rendement
+                            </div>
+                            <h3 class="info-value">
+                                {{ recolte.rendement|floatformat:2 }}
+                                <span class="info-unit">kg/ha</span>
+                            </h3>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="bi bi-calendar3"></i>
+                                Date de récolte
+                            </div>
+                            <h3 class="info-value small">
+                                {{ recolte.date_recolte|date:"d F Y" }}
+                            </h3>
+                            <small class="text-muted">
+                                {{ recolte.date_recolte|date:"l"|title }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Observations -->
+                    {% if recolte.observations %}
+                        <div class="sidebar-card observations-card">
+                            <h6 class="sidebar-card-header">
+                                <i class="bi bi-chat-square-text"></i>
+                                Observations
+                            </h6>
+                            <p class="mb-0">{{ recolte.observations }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Photo de la récolte -->
+                    {% if recolte.photo %}
+                        <div class="photo-card">
+                            <div class="detail-card-header">
+                                <h6 class="mb-0 d-flex align-items-center">
+                                    <i class="bi bi-camera me-2"></i>
+                                    Photo de la récolte
+                                </h6>
+                            </div>
+                            <div class="photo-container">
+                                <img src="{{ recolte.photo.url }}" 
+                                     alt="Photo de la récolte" 
+                                     class="photo-img">
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Métadonnées -->
+                    <div class="metadata">
+                        <i class="bi bi-clock"></i>
+                        Enregistrée le {{ recolte.date_enregistrement|date:"d/m/Y à H:i" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Colonne latérale -->
+        <div class="col-lg-4">
+            <!-- Informations du producteur -->
+            <div class="sidebar-card person-card">
+                <h6 class="sidebar-card-header">
+                    <i class="bi bi-person"></i>
+                    Producteur
+                </h6>
+                
+                <div class="person-avatar {% if recolte.producteur.photo %}with-photo{% endif %}">
+                    {% if recolte.producteur.photo %}
+                        <img src="{{ recolte.producteur.photo.url }}" 
+                             alt="{{ recolte.producteur.nom }}">
+                    {% else %}
+                        {{ recolte.producteur.nom|first|upper }}{{ recolte.producteur.prenom|first|upper }}
+                    {% endif %}
+                </div>
+                
+                <h4 class="person-name">
+                    {{ recolte.producteur.nom }} {{ recolte.producteur.prenom }}
+                </h4>
+                
+                <p class="text-muted mb-3">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    {{ recolte.producteur.arrondissement.nom }}, {{ recolte.producteur.arrondissement.commune.nom }}
+                </p>
+                
+                <ul class="person-contact">
+                    <li>
+                        <i class="bi bi-telephone text-success"></i>
+                        {{ recolte.producteur.telephone }}
+                    </li>
+                    {% if recolte.producteur.email %}
+                        <li>
+                            <i class="bi bi-envelope text-success"></i>
+                            {{ recolte.producteur.email }}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <!-- Informations de la parcelle -->
+            <div class="sidebar-card parcelle-card">
+                <h6 class="sidebar-card-header">
+                    <i class="bi bi-map"></i>
+                    Parcelle
+                </h6>
+                
+                <h5 class="mb-3">{{ recolte.parcelle.nom }}</h5>
+                
+                <ul>
+                    <li>
+                        <span>Superficie</span>
+                        <span class="value">{{ recolte.parcelle.superficie }} ha</span>
+                    </li>
+                    <li>
+                        <span>Localisation</span>
+                        <span class="value">{{ recolte.parcelle.localisation|truncatechars:20 }}</span>
+                    </li>
+                    {% if recolte.parcelle.latitude and recolte.parcelle.longitude %}
+                        <li>
+                            <span>Coordonnées GPS</span>
+                            <span class="value small">
+                                {{ recolte.parcelle.latitude|floatformat:4 }}, 
+                                {{ recolte.parcelle.longitude|floatformat:4 }}
+                            </span>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+                {% if recolte.parcelle.photo %}
+                    <div class="mt-3">
+                        <img src="{{ recolte.parcelle.photo.url }}" 
+                             alt="Photo de la parcelle"
+                             class="img-fluid rounded shadow-sm">
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Statistiques -->
+            <div class="sidebar-card stats-card">
+                <h6 class="sidebar-card-header">
+                    <i class="bi bi-bar-chart"></i>
+                    Statistiques
+                </h6>
+                
+                <ul>
+                    <li>
+                        <span>Rendement par hectare</span>
+                        <span class="value text-success">{{ recolte.rendement|floatformat:2 }} kg</span>
+                    </li>
+                    <li>
+                        <span>Superficie de la parcelle</span>
+                        <span class="value">{{ recolte.parcelle.superficie }} ha</span>
+                    </li>
+                    <li>
+                        <span>Production totale</span>
+                        <span class="value text-success">{{ recolte.quantite|floatformat:2 }} kg</span>
+                    </li>
+                    <li>
+                        <span>Calcul du rendement</span>
+                        <span class="value small text-muted">
+                            ({{ recolte.quantite }} ÷ {{ recolte.parcelle.superficie }})
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animation des cartes
+    document.addEventListener('DOMContentLoaded', function() {
+        const infoItems = document.querySelectorAll('.info-item');
+        infoItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+        
+        // Animation des cartes latérales
+        const sidebarCards = document.querySelectorAll('.sidebar-card');
+        sidebarCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+            }, index * 150 + 300);
+        });
+    });
+</script>
+{% endblock %}

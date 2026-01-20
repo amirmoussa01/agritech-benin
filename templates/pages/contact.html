@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - AgriTech-Bénin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #28a745;
+            --dark-green: #1e7e34;
+            --light-green: #d4edda;
+            --orange: #fd7e14;
+            --yellow: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        /* Navbar */
+        .navbar-custom {
+            background-color: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-custom.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            color: var(--dark-green);
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #333 !important;
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Hero Header */
+        .contact-header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+            color: white;
+            padding: 120px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%23ffffff" fill-opacity="0.1"/></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom;
+            background-size: cover;
+        }
+        
+        .contact-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .contact-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Contact Form */
+        .contact-form-container {
+            position: relative;
+            margin-top: -50px;
+            z-index: 10;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        
+        .contact-form {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            padding: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form:hover {
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+        }
+        
+        .contact-form h3 {
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .contact-form h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+            border-radius: 2px;
+        }
+        
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.3rem rgba(40, 167, 69, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .form-control::placeholder {
+            color: #aaa;
+        }
+        
+        /* Contact Info */
+        .contact-info-card {
+            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+            border-radius: 20px;
+            padding: 40px;
+            height: 100%;
+            border: 3px solid var(--primary-green);
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .contact-info-card h4 {
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .contact-info-card h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--primary-green);
+            border-radius: 2px;
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .contact-info-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .contact-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 1.3rem;
+        }
+        
+        .contact-info-content h6 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .contact-info-content p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Social Media */
+        .social-media-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(40, 167, 69, 0.1);
+        }
+        
+        .social-media-section h6 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px) rotate(5deg);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .social-icon.facebook:hover {
+            background: linear-gradient(135deg, #1877f2, #0d65d9);
+        }
+        
+        .social-icon.twitter:hover {
+            background: linear-gradient(135deg, #1da1f2, #0c8dd9);
+        }
+        
+        .social-icon.whatsapp:hover {
+            background: linear-gradient(135deg, #25d366, #1da851);
+        }
+        
+        /* Buttons */
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border: none;
+            color: white;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(40, 167, 69, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .faq-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="%2328a745" fill-opacity="0.05" d="M45.1,-71.8C58.4,-64.7,69.3,-51.5,76.3,-36.3C83.3,-21,86.4,-3.6,83.6,12.6C80.7,28.9,71.9,44.1,58.7,54.8C45.5,65.5,27.9,71.7,9.9,74.5C-8.1,77.3,-26.5,76.7,-41.9,69.3C-57.3,61.9,-69.7,47.7,-77.2,31.2C-84.7,14.7,-87.2,-4.1,-83.8,-22.6C-80.3,-41.2,-70.8,-59.6,-56.3,-66.5C-41.7,-73.4,-22.1,-68.9,-2.5,-65.5C17.2,-62.1,31.8,-78.8,45.1,-71.8Z" transform="translate(100 100)"/></svg>') no-repeat;
+        }
+        
+        .faq-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .faq-title h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .faq-title h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+            border-radius: 2px;
+        }
+        
+        .faq-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .faq-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary-green);
+        }
+        
+        .faq-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--dark-green));
+        }
+        
+        .faq-question {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .faq-question i {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .faq-question h5 {
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .faq-answer {
+            color: #666;
+            padding-left: 40px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding-top 0.5s ease;
+        }
+        
+        .faq-card.active .faq-answer {
+            max-height: 200px;
+            padding-top: 15px;
+        }
+        
+        /* Map Section */
+        .map-section {
+            padding: 60px 0;
+            background: white;
+        }
+        
+        .map-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            height: 400px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e8f5e9 0%, #d4edda 100%);
+            color: var(--dark-green);
+            padding: 40px;
+        }
+        
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer h5 {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-green);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 40px;
+            text-align: center;
+            color: #aaa;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .contact-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .contact-form {
+                padding: 30px 20px;
+            }
+            
+            .contact-info-card {
+                margin-top: 30px;
+                padding: 30px 20px;
+            }
+            
+            .contact-info-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .contact-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .faq-title h3 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .contact-header {
+                padding: 100px 0 40px;
+            }
+            
+            .contact-form-container {
+                margin-top: -30px;
+            }
+            
+            .contact-form h3 {
+                font-size: 1.5rem;
+            }
+            
+            .social-icons {
+                flex-wrap: wrap;
+            }
+            
+            .btn-submit {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'accueil' %}">
+                <i class="fas fa-seedling"></i> AgriTech-Bénin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-success text-white ms-2 px-4" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Connexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="contact-header">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">Contactez-nous</h1>
+            <p class="lead">Une question ? Une suggestion ? Notre équipe est à votre écoute 24h/24</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="pb-5">
+        <div class="container">
+            
+            <!-- Messages de feedback -->
+            {% if messages %}
+                <div class="row">
+                    <div class="col-lg-10 mx-auto">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert" 
+                                 style="border-radius: 12px; border-left: 5px solid var(--primary-green);">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle me-3 fs-4"></i>
+                                    <div class="flex-grow-1">
+                                        <strong>{{ message.tags|title }} !</strong> {{ message }}
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="row contact-form-container">
+                <!-- Formulaire de contact -->
+                <div class="col-lg-8">
+                    <div class="contact-form">
+                        <h3><i class="fas fa-envelope text-success me-2"></i> Envoyez-nous un message</h3>
+                        <form method="post" id="contactForm">
+                            {% csrf_token %}
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 form-group">
+                                    <label for="nom" class="form-label">Nom complet *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="nom" name="nom" 
+                                               placeholder="Votre nom complet" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               placeholder="exemple@email.com" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 form-group">
+                                    <label for="telephone" class="form-label">Téléphone</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input type="tel" class="form-control" id="telephone" name="telephone" 
+                                               placeholder="+229 XX XX XX XX">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="sujet" class="form-label">Sujet *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                        <select class="form-select" id="sujet" name="sujet" required>
+                                            <option value="">Choisissez un sujet</option>
+                                            <option value="Question générale">Question générale</option>
+                                            <option value="Problème technique">Problème technique</option>
+                                            <option value="Inscription producteur">Inscription producteur</option>
+                                            <option value="Gestion de compte">Gestion de compte</option>
+                                            <option value="Suggestion">Suggestion d'amélioration</option>
+                                            <option value="Partenaire">Devenir partenaire</option>
+                                            <option value="Autre">Autre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="message" class="form-label">Votre message *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-comment-alt"></i></span>
+                                    <textarea class="form-control" id="message" name="message" rows="6" 
+                                              placeholder="Décrivez votre demande en détail..." required></textarea>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle text-success me-1"></i>
+                                    Réponse garantie sous 24h ouvrables
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter">
+                                    <label class="form-check-label" for="newsletter">
+                                        Je souhaite recevoir les actualités et conseils agricoles par email
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-paper-plane me-2"></i> Envoyer le message
+                            </button>
+                            
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-lock me-1"></i> Vos informations sont sécurisées et ne seront jamais partagées
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Informations de contact -->
+                <div class="col-lg-4 mt-5 mt-lg-0">
+                    <div class="contact-info-card">
+                        <h4><i class="fas fa-info-circle me-2"></i> Nos coordonnées</h4>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h6>Adresse</h6>
+                                <p>Cotonou, Littoral<br>République du Bénin<br>
+                                <small class="text-success">Siège principal</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h6>Téléphone</h6>
+                                <p>+229 60 00 00 00<br>+229 61 11 11 11<br>
+                                <small class="text-success">Support technique</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h6>Email</h6>
+                                <p>contact@agritech-benin.org<br>support@agritech-benin.org<br>
+                                <small class="text-success">Réponse rapide</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h6>Horaires d'ouverture</h6>
+                                <p>Lundi - Vendredi : 8h00 - 17h00<br>Samedi : 9h00 - 13h00<br>
+                                <small class="text-success">Urgences 24h/24</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="social-media-section">
+                            <h6>Suivez-nous sur les réseaux</h6>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h3 class="text-center mb-5 text-success">
+                        <i class="fas fa-map-marked-alt me-2"></i> Trouvez-nous
+                    </h3>
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            <i class="fas fa-map"></i>
+                            <h4 class="mb-3">Cotonou, Bénin</h4>
+                            <p class="text-center">Notre siège est situé au cœur de la capitale économique</p>
+                            <div class="mt-3">
+                                <a href="https://maps.google.com/?q=Cotonou,Bénin" target="_blank" 
+                                   class="btn btn-success px-4">
+                                    <i class="fas fa-directions me-2"></i> Voir sur Google Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="faq-title">
+                <h3>Questions fréquentes</h3>
+                <p class="text-muted">Trouvez rapidement des réponses à vos questions</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>Comment m'inscrire en tant que producteur ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Cliquez sur "S'inscrire gratuitement" sur la page d'accueil, remplissez le formulaire avec vos informations personnelles et celles de votre exploitation. Vous recevrez immédiatement un accès à votre espace personnel.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>La plateforme est-elle gratuite ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Oui ! AgriTech-Bénin est entièrement gratuit pour tous les producteurs membres des coopératives agricoles partenaires. Nous croyons en l'accessibilité de la technologie pour tous les agriculteurs béninois.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>Puis-je utiliser la plateforme sur mon téléphone ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolument ! Notre interface est entièrement responsive et optimisée pour les smartphones et tablettes. Vous pouvez gérer vos récoltes directement depuis vos parcelles.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>Comment gérer mes stocks d'entrepôt ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Dans votre espace gestionnaire, accédez à la section "Stocks". Vous pouvez ajouter des entrées, consulter les niveaux actuels et recevoir des alertes automatiques pour les stocks bas.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>Qui peut m'aider en cas de problème technique ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Notre équipe support est disponible du lundi au samedi. Utilisez ce formulaire de contact, appelez-nous aux numéros indiqués ou envoyez un email à support@agritech-benin.org.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-card">
+                        <div class="faq-question">
+                            <i class="fas fa-question-circle"></i>
+                            <h5>Comment exporter mes données de production ?</h5>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Dans votre tableau de bord, allez dans "Rapports" et sélectionnez "Exporter". Vous pouvez télécharger vos données au format PDF ou Excel pour les partager avec vos partenaires.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <p class="text-muted mb-3">Vous ne trouvez pas la réponse à votre question ?</p>
+                <a href="#contactForm" class="btn btn-success px-5 py-3" style="border-radius: 12px;">
+                    <i class="fas fa-comments me-2"></i> Posez votre question ici
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <h5><i class="fas fa-seedling me-2"></i> AgriTech-Bénin</h5>
+                    <p class="text-muted mt-3">La solution digitale innovante pour moderniser et optimiser la gestion des coopératives agricoles au Bénin.</p>
+                    <div class="mt-4">
+                        <h6>Certifications</h6>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-success">AgriTech</span>
+                            <span class="badge bg-info">Digital Bénin</span>
+                            <span class="badge bg-warning">Agriculture 4.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-5">
+                    <h5>Navigation</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'accueil' %}">Accueil</a></li>
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#">Mentions légales</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5>Services</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'inscription_producteur' %}">Inscription Producteur</a></li>
+                        <li><a href="{% url 'login' %}">Espace Producteur</a></li>
+                        <li><a href="{% url 'login' %}">Espace Gestionnaire</a></li>
+                        <li><a href="{% url 'login' %}">Espace Administrateur</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <h5>Contact</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Cotonou, Bénin</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@agritech-benin.org</li>
+                        <li><i class="fas fa-phone me-2"></i> +229 60 00 00 00</li>
+                        <li><i class="fas fa-clock me-2"></i> Lun - Sam: 8h - 17h</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="mb-0">&copy; 2026 AgriTech-Bénin. Tous droits réservés. 
+                    | <a href="#">Politique de confidentialité</a> 
+                    | <a href="#">Conditions d'utilisation</a>
+                    | <a href="#">Charte qualité</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-custom');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // Form validation and submission animation
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const form = e.target;
+            let isValid = true;
+            
+            // Simple validation
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    
+                    // Add error message if not exists
+                    if (!field.nextElementSibling?.classList.contains('invalid-feedback')) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback';
+                        errorDiv.textContent = 'Ce champ est obligatoire';
+                        field.parentNode.appendChild(errorDiv);
+                    }
+                } else {
+                    field.classList.remove('is-invalid');
+                    const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                    if (errorDiv) errorDiv.remove();
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                
+                // Shake animation for invalid form
+                form.classList.add('shake');
+                setTimeout(() => {
+                    form.classList.remove('shake');
+                }, 500);
+                
+                // Scroll to first error
+                const firstError = form.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }
+            } else {
+                // Add loading state to submit button
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Envoi en cours...';
+                submitBtn.disabled = true;
+                
+                // Simulate form submission (remove this in production)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            }
+        });
+
+        // Add shake animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            .shake {
+                animation: shake 0.5s ease-in-out;
+            }
+            .is-invalid {
+                border-color: #dc3545 !important;
+            }
+            .invalid-feedback {
+                display: block;
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Auto-resize textarea
+        const textarea = document.getElementById('message');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        }
+
+        // Phone number formatting
+        const phoneInput = document.getElementById('telephone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    if (!value.startsWith('229')) {
+                        value = '229' + value;
+                    }
+                    if (value.length > 3) {
+                        value = value.replace(/(\d{3})(\d{2})(\d{2})(\d{2})/, '+$1 $2 $3 $4');
+                    }
+                }
+                e.target.value = value;
+            });
+        }
+    </script>
+</body>
+</html>

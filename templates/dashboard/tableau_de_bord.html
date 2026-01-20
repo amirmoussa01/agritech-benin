@@ -1,0 +1,1286 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de Bord - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Styles existants... */
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    
+    .dashboard-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+    
+    .welcome-message {
+        font-size: 1.1rem;
+        color: #6b7280;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    }
+    
+    .stat-card.primary::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+    .stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
+    .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--primary-light), white);
+        color: var(--primary-dark);
+    }
+    
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 0;
+    }
+    
+    .stat-unit {
+        font-size: 1rem;
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+    
+    .alert-custom {
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 1.25rem;
+        box-shadow: var(--shadow-sm);
+        border-left: 4px solid #ef4444;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        height: 100%;
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .chart-title {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin: 0;
+    }
+    
+    /* Nouveaux styles pour les graphiques */
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+    }
+    
+    .chart-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .chart-period-btn {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .chart-period-btn:hover {
+        background: #e5e7eb;
+    }
+    
+    .chart-period-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+    
+    .trend-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+    }
+    
+    .trend-up {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .trend-down {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .trend-neutral {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+    
+    .mini-chart {
+        height: 60px;
+        margin-top: 0.5rem;
+        opacity: 0.7;
+        border-radius: 4px;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1));
+    }
+    
+    /* Styles existants restants... */
+    .culture-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f0fdf4;
+        border-radius: 20px;
+        color: var(--primary-dark);
+        font-weight: 500;
+    }
+    
+    .recent-activity {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        height: 100%;
+    }
+    
+    .activity-item {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        border-left: 3px solid var(--primary-color);
+        background: #f8fafc;
+        transition: all 0.3s ease;
+    }
+    
+    .activity-item:hover {
+        background: #f0fdf4;
+        transform: translateX(5px);
+    }
+    
+    .activity-culture {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .activity-meta {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+    
+    .entrepot-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .entrepot-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .entrepot-card.alert {
+        border-color: #fca5a5;
+        background: #fef2f2;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0.5rem 0;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #059669);
+        border-radius: 4px;
+        transition: width 0.6s ease;
+    }
+    
+    .progress-fill.warning {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+    
+    .progress-fill.danger {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+    
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+        }
+        
+        .chart-wrapper {
+            height: 250px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container fade-in">
+    <!-- En-tête -->
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2 class="mb-2">
+                    <i class="bi bi-speedometer2 text-success me-2"></i>
+                    Tableau de bord
+                </h2>
+                <p class="welcome-message mb-0">
+                    Bonjour <strong>{{ user.get_full_name|default:user.username }}</strong> ! 
+                    Voici votre aperçu quotidien.
+                </p>
+            </div>
+            
+            <div class="dropdown">
+                <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-calendar me-2"></i>
+                    {{ current_period|default:"Ce mois" }}
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="?period=day">Aujourd'hui</a></li>
+                    <li><a class="dropdown-item" href="?period=week">Cette semaine</a></li>
+                    <li><a class="dropdown-item" href="?period=month">Ce mois</a></li>
+                    <li><a class="dropdown-item" href="?period=year">Cette année</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    {% if is_producteur %}
+        <!-- ========== VUE PRODUCTEUR ========== -->
+        
+        <!-- Statistiques -->
+        <div class="stats-grid">
+            <div class="stat-card success">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <div class="stat-icon">
+                            <i class="bi bi-basket2"></i>
+                        </div>
+                        <div class="stat-value">{{ total_recoltes }}</div>
+                        <div class="stat-label">Récoltes enregistrées</div>
+                    </div>
+                    <div class="mini-chart" id="recoltesTrend"></div>
+                </div>
+            </div>
+            
+            <div class="stat-card primary">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <div class="stat-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div class="stat-value">{{ quantite_totale|floatformat:0 }} 
+                            <span class="stat-unit">kg</span>
+                        </div>
+                        <div class="stat-label">Production totale</div>
+                    </div>
+                    <div class="mini-chart" id="productionTrend"></div>
+                </div>
+            </div>
+            
+            <div class="stat-card info">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <div class="stat-icon">
+                            <i class="bi bi-map"></i>
+                        </div>
+                        <div class="stat-value">{{ producteur.parcelles.count }}</div>
+                        <div class="stat-label">Parcelles actives</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card warning">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <div class="stat-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div class="stat-label">Zone d'activité</div>
+                        <div class="stat-value" style="font-size: 1.25rem; margin-top: 0.5rem;">
+                            {{ producteur.arrondissement.nom }}
+                        </div>
+                        <small class="text-muted">{{ producteur.arrondissement.commune.nom }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nouvelle section: Graphiques d'évolution -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-12">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Évolution de la production
+                        </h5>
+                        <div class="chart-actions">
+                            <button class="chart-period-btn active" data-period="month">30j</button>
+                            <button class="chart-period-btn" data-period="quarter">90j</button>
+                            <button class="chart-period-btn" data-period="year">1an</button>
+                        </div>
+                    </div>
+                    
+                    {% if evolution_production %}
+                        <div class="chart-wrapper">
+                            <canvas id="productionChart"></canvas>
+                        </div>
+                        <div class="chart-legend" id="productionLegend"></div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                            <h5 class="mb-2">Aucune donnée d'évolution</h5>
+                            <p class="text-muted mb-0">Les données d'évolution apparaîtront après plusieurs récoltes</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenu principal -->
+        <div class="row g-4">
+            <!-- Graphique: Récoltes par culture -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="bi bi-pie-chart me-2"></i>
+                            Répartition par culture
+                        </h5>
+                        <span class="badge bg-success">Cette année</span>
+                    </div>
+                    
+                    {% if recoltes_par_culture %}
+                        <div class="chart-wrapper">
+                            <canvas id="cultureChart"></canvas>
+                        </div>
+                        <div class="chart-legend" id="cultureLegend"></div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-pie-chart"></i>
+                            </div>
+                            <h5 class="mb-2">Aucune donnée</h5>
+                            <p class="text-muted mb-0">Commencez par enregistrer vos premières récoltes</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Graphique d'évolution des rendements -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="bi bi-speedometer me-2"></i>
+                            Évolution des rendements
+                        </h5>
+                        <span class="badge bg-warning">kg/ha</span>
+                    </div>
+                    
+                    {% if evolution_rendements %}
+                        <div class="chart-wrapper">
+                            <canvas id="rendementChart"></canvas>
+                        </div>
+                        <div class="chart-legend" id="rendementLegend"></div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-speedometer"></i>
+                            </div>
+                            <h5 class="mb-2">Aucune donnée de rendement</h5>
+                            <p class="text-muted mb-0">Les rendements apparaîtront avec les récoltes</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dernières récoltes -->
+        <div class="row g-4 mt-4">
+            <div class="col-12">
+                <div class="recent-activity">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="chart-title">
+                            <i class="bi bi-clock-history me-2"></i>
+                            Activités récentes
+                        </h5>
+                        <a href="{% url 'ajouter_recolte' %}" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>Nouvelle
+                        </a>
+                    </div>
+                    
+                    {% if dernieres_recoltes %}
+                        <div class="activity-list">
+                            {% for recolte in dernieres_recoltes %}
+                                <a href="{% url 'detail_recolte' recolte.pk %}" 
+                                   class="text-decoration-none text-dark">
+                                    <div class="activity-item">
+                                        <div class="activity-culture">
+                                            {{ recolte.type_culture }}
+                                            <span class="trend-indicator trend-up">
+                                                <i class="bi bi-arrow-up"></i>
+                                                {{ recolte.rendement }} kg/ha
+                                            </span>
+                                        </div>
+                                        <div class="activity-meta">
+                                            <div class="d-flex justify-content-between">
+                                                <span>
+                                                    <i class="bi bi-map me-1"></i>
+                                                    {{ recolte.parcelle.nom }}
+                                                </span>
+                                                <span class="badge bg-success">
+                                                    {{ recolte.quantite }} kg
+                                                </span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-1">
+                                                <small>
+                                                    <i class="bi bi-calendar me-1"></i>
+                                                    {{ recolte.date_recolte|date:"d/m/Y" }}
+                                                </small>
+                                                <small class="text-success">
+                                                    +{{ recolte.evolution_rendement|floatformat:1 }}% vs dernier
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'liste_recoltes' %}" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>
+                                Voir toutes les récoltes
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
+                            <h5 class="mb-2">Aucune activité récente</h5>
+                            <p class="text-muted mb-0">Enregistrez votre première récolte</p>
+                            <a href="{% url 'ajouter_recolte' %}" class="btn btn-success mt-3">
+                                <i class="bi bi-plus-circle me-2"></i>Commencer
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    {% else %}
+        <!-- ========== VUE ADMIN / GESTIONNAIRE ========== -->
+        
+        <!-- Alertes prioritaires -->
+        {% if stocks_alerte %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert-custom alert alert-danger d-flex align-items-start">
+                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3 mt-1"></i>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="alert-heading mb-0">
+                                    Alertes de stock critique
+                                </h5>
+                                <span class="badge bg-danger">{{ stocks_alerte|length }}</span>
+                            </div>
+                            <p class="mb-3">
+                                {% if is_superuser %}
+                                    Certains stocks nécessitent votre attention immédiate
+                                {% else %}
+                                    Des stocks dans vos entrepôts sont en dessous du seuil critique
+                                {% endif %}
+                            </p>
+                            
+                            <div class="row g-3">
+                                {% for stock in stocks_alerte %}
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="bg-white border border-danger rounded p-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <strong class="text-danger">{{ stock.type_culture }}</strong>
+                                                <small class="text-danger">CRITIQUE</small>
+                                            </div>
+                                            <small class="text-muted d-block mb-2">
+                                                <i class="bi bi-building me-1"></i>{{ stock.entrepot.nom }}
+                                            </small>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Stock: {{ stock.quantite_actuelle }} kg</span>
+                                                <span>Seuil: {{ stock.seuil_alerte }} kg</span>
+                                            </div>
+                                            <div class="mini-chart" style="background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1));"></div>
+                                            <a href="{% url 'ajouter_mouvement' stock.pk %}" 
+                                               class="btn btn-danger btn-sm w-100 mt-2">
+                                                <i class="bi bi-plus-circle me-1"></i>Réapprovisionner
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Statistiques selon le rôle -->
+        <div class="stats-grid">
+            {% if is_superuser %}
+                <!-- Stats Admin -->
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-value">{{ total_producteurs }}</div>
+                    <div class="stat-label">Producteurs actifs</div>
+                    <div class="mini-chart" id="producteursTrend"></div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="bi bi-basket2"></i>
+                    </div>
+                    <div class="stat-value">{{ total_recoltes }}</div>
+                    <div class="stat-label">Récoltes totales</div>
+                    <div class="mini-chart" id="recoltesTotalTrend"></div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="stat-value">{{ total_entrepots }}</div>
+                    <div class="stat-label">Entrepôts</div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div class="stat-value">{{ quantite_totale|floatformat:0 }}
+                        <span class="stat-unit">kg</span>
+                    </div>
+                    <div class="stat-label">Production totale</div>
+                    <div class="mini-chart" id="productionTotalTrend"></div>
+                </div>
+                
+            {% elif is_gestionnaire %}
+                <!-- Stats Gestionnaire -->
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="stat-value">{{ total_entrepots }}</div>
+                    <div class="stat-label">Mes entrepôts</div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="bi bi-stack"></i>
+                    </div>
+                    <div class="stat-value">{{ capacite_totale|floatformat:0 }}
+                        <span class="stat-unit">kg</span>
+                    </div>
+                    <div class="stat-label">Capacité totale</div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="bi bi-boxes"></i>
+                    </div>
+                    <div class="stat-value">{{ stock_total|floatformat:0 }}
+                        <span class="stat-unit">kg</span>
+                    </div>
+                    <div class="stat-label">Stock actuel</div>
+                    <div class="mini-chart" id="stockTrend"></div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+                    <div class="stat-value">{{ taux_moyen|floatformat:1 }}
+                        <span class="stat-unit">%</span>
+                    </div>
+                    <div class="stat-label">Taux moyen</div>
+                    <div class="mini-chart" id="tauxTrend"></div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Nouvelle section: Graphiques d'évolution -->
+        {% if is_gestionnaire or is_superuser %}
+        <div class="row g-4 mb-4">
+            <div class="col-lg-12">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="bi bi-arrow-trend-up me-2"></i>
+                            Évolution des stocks et mouvements
+                        </h5>
+                        <div class="chart-actions">
+                            <button class="chart-period-btn active" data-period="week">7j</button>
+                            <button class="chart-period-btn" data-period="month">30j</button>
+                            <button class="chart-period-btn" data-period="quarter">90j</button>
+                        </div>
+                    </div>
+                    
+                    {% if evolution_stocks %}
+                        <div class="chart-wrapper">
+                            <canvas id="stockEvolutionChart"></canvas>
+                        </div>
+                        <div class="chart-legend" id="stockEvolutionLegend"></div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-arrow-trend-up"></i>
+                            </div>
+                            <h5 class="mb-2">Aucune donnée d'évolution</h5>
+                            <p class="text-muted mb-0">Les données d'évolution apparaîtront après plusieurs mouvements</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Contenu selon le rôle -->
+        <div class="row g-4">
+            {% if is_gestionnaire %}
+                <!-- Vue Gestionnaire -->
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h5 class="chart-title">
+                                <i class="bi bi-building me-2"></i>
+                                Mes entrepôts
+                            </h5>
+                        </div>
+                        
+                        {% if mes_entrepots_infos %}
+                            <div class="entrepot-list">
+                                {% for info in mes_entrepots_infos %}
+                                    <div class="entrepot-card {% if info.stocks_alerte %}alert{% endif %}">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="mb-1">{{ info.entrepot.nom }}</h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-geo-alt me-1"></i>
+                                                    {{ info.entrepot.arrondissement.nom }}
+                                                </small>
+                                            </div>
+                                            {% if info.stocks_alerte %}
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                                    {{ info.stocks_alerte|length }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                                <span>Stock: {{ info.stock_actuel|floatformat:0 }} kg</span>
+                                                <span>
+                                                    {{ info.taux_remplissage|floatformat:1 }}%
+                                                    {% if info.evolution_taux %}
+                                                        <span class="trend-indicator {% if info.evolution_taux > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                                            <i class="bi {% if info.evolution_taux > 0 %}bi-arrow-up{% else %}bi-arrow-down{% endif %}"></i>
+                                                            {{ info.evolution_taux|floatformat:1 }}%
+                                                        </span>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="progress-bar-custom">
+                                                <div class="progress-fill {% if info.taux_remplissage < 30 %}danger{% elif info.taux_remplissage < 70 %}warning{% endif %}" 
+                                                     style="width: {{ info.taux_remplissage }}%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                            <a href="{% url 'detail_entrepot' info.entrepot.pk %}" 
+                                               class="btn btn-outline-success btn-sm">
+                                                <i class="bi bi-eye me-1"></i>Gérer l'entrepôt
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <h5 class="mb-2">Aucun entrepôt assigné</h5>
+                                <p class="text-muted mb-0">Contactez l'administrateur pour obtenir des entrepôts</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h5 class="chart-title">
+                                <i class="bi bi-pie-chart me-2"></i>
+                                Stocks par culture
+                            </h5>
+                        </div>
+                        
+                        {% if stocks_par_culture %}
+                            <div class="chart-wrapper">
+                                <canvas id="stockCultureChart"></canvas>
+                            </div>
+                            <div class="chart-legend" id="stockCultureLegend"></div>
+                        {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="bi bi-boxes"></i>
+                                </div>
+                                <h5 class="mb-2">Aucun stock disponible</h5>
+                                <p class="text-muted mb-0">Commencez par ajouter des mouvements de stock</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            {% elif is_superuser %}
+                <!-- Vue Admin -->
+                <div class="col-12">
+                    <div class="alert alert-info border-0 bg-blue-50">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle fs-5 me-3 text-blue-600"></i>
+                            <div>
+                                <h6 class="alert-heading text-blue-600 mb-2">
+                                    <i class="bi bi-shield-fill me-1"></i> Vue Administrateur
+                                </h6>
+                                <p class="mb-0 text-blue-700">
+                                    Vous avez un accès complet à toutes les fonctionnalités du système. 
+                                    Consultez les <a href="/admin/" class="text-blue-600 fw-bold">paramètres d'administration</a> 
+                                    pour la configuration avancée.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Graphiques d'évolution admin -->
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h5 class="chart-title">
+                                <i class="bi bi-bar-chart me-2"></i>
+                                Évolution de la production globale
+                            </h5>
+                            <span class="badge bg-info">Admin</span>
+                        </div>
+                        
+                        {% if evolution_production_globale %}
+                            <div class="chart-wrapper">
+                                <canvas id="adminProductionChart"></canvas>
+                            </div>
+                            <div class="chart-legend" id="adminProductionLegend"></div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-graph-up" style="font-size: 3rem; color: #d1d5db;"></i>
+                                <p class="text-muted mt-3 mb-0">
+                                    Les statistiques d'évolution apparaîtront avec les données
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h5 class="chart-title">
+                                <i class="bi bi-people me-2"></i>
+                                Évolution des producteurs actifs
+                            </h5>
+                            <div class="chart-actions">
+                                <button class="chart-period-btn active" data-period="month">30j</button>
+                                <button class="chart-period-btn" data-period="quarter">90j</button>
+                                <button class="chart-period-btn" data-period="year">1an</button>
+                            </div>
+                        </div>
+                        
+                        {% if evolution_producteurs %}
+                            <div class="chart-wrapper">
+                                <canvas id="adminProducteursChart"></canvas>
+                            </div>
+                            <div class="chart-legend" id="adminProducteursLegend"></div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-people" style="font-size: 3rem; color: #d1d5db;"></i>
+                                <p class="text-muted mt-3 mb-0">
+                                    Suivi de l'activité des producteurs
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            {% else %}
+                <!-- Utilisateur sans rôle -->
+                <div class="col-12">
+                    <div class="alert alert-warning border-0">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-exclamation-triangle fs-5 me-3 text-warning"></i>
+                            <div>
+                                <h5 class="alert-heading mb-2">Accès en attente</h5>
+                                <p class="mb-0">
+                                    Votre compte n'a pas encore de rôle spécifique dans le système. 
+                                    Veuillez contacter l'administrateur pour obtenir les permissions appropriées.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des cartes de statistiques
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+        
+        // Animation des barres de progression
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 300);
+        });
+        
+        // Gestion des boutons de période
+        document.querySelectorAll('.chart-period-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const parent = this.closest('.chart-container');
+                parent.querySelectorAll('.chart-period-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Ici, vous pourriez ajouter une requête AJAX pour mettre à jour les données
+            });
+        });
+        
+        // Mini graphiques trend dans les cartes de stats
+        function createMiniChart(elementId, trend) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 40;
+            const ctx = canvas.getContext('2d');
+            
+            // Exemple de données pour le mini graphique
+            const data = trend === 'up' ? [5, 15, 10, 25, 20, 30, 35] : 
+                         trend === 'down' ? [35, 30, 25, 20, 25, 15, 10] : 
+                         [15, 20, 15, 25, 20, 25, 20];
+            
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.appendChild(canvas);
+                
+                // Dessiner le mini graphique
+                ctx.beginPath();
+                ctx.moveTo(0, 40 - (data[0]/40*40));
+                for(let i = 1; i < data.length; i++) {
+                    ctx.lineTo((100/(data.length-1))*i, 40 - (data[i]/40*40));
+                }
+                ctx.strokeStyle = trend === 'up' ? '#10b981' : trend === 'down' ? '#ef4444' : '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        // Initialiser les mini graphiques
+        createMiniChart('recoltesTrend', 'up');
+        createMiniChart('productionTrend', 'up');
+        createMiniChart('producteursTrend', 'up');
+        createMiniChart('recoltesTotalTrend', 'up');
+        createMiniChart('productionTotalTrend', 'up');
+        createMiniChart('stockTrend', 'up');
+        createMiniChart('tauxTrend', 'up');
+        
+        // Initialiser les graphiques Chart.js si des données sont disponibles
+        {% if recoltes_par_culture %}
+            initCultureChart();
+        {% endif %}
+        
+        {% if evolution_rendements %}
+            initRendementChart();
+        {% endif %}
+        
+        {% if stocks_par_culture %}
+            initStockCultureChart();
+        {% endif %}
+        
+        {% if evolution_production %}
+            initProductionChart();
+        {% endif %}
+        
+        {% if evolution_stocks %}
+            initStockEvolutionChart();
+        {% endif %}
+        
+        // Fonctions d'initialisation des graphiques
+        function initCultureChart() {
+            const ctx = document.getElementById('cultureChart').getContext('2d');
+            const colors = [
+                '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ef4444',
+                '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6366f1'
+            ];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [{% for item in recoltes_par_culture %}'{{ item.type_culture__nom }}',{% endfor %}],
+                    datasets: [{
+                        data: [{% for item in recoltes_par_culture %}{{ item.total }},{% endfor %}],
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} kg (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+        
+        function initRendementChart() {
+            const ctx = document.getElementById('rendementChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+                    datasets: [{
+                        label: 'Rendement moyen (kg/ha)',
+                        data: [65, 70, 75, 72, 78, 80, 82, 85, 83, 81, 79, 76],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'kg/ha'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initStockCultureChart() {
+            const ctx = document.getElementById('stockCultureChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for culture, quantite in stocks_par_culture.items %}'{{ culture }}',{% endfor %}],
+                    datasets: [{
+                        label: 'Stock (kg)',
+                        data: [{% for culture, quantite in stocks_par_culture.items %}{{ quantite }},{% endfor %}],
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quantité (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initProductionChart() {
+            const ctx = document.getElementById('productionChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                    datasets: [
+                        {
+                            label: 'Maïs',
+                            data: [150, 180, 210, 240],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Riz',
+                            data: [100, 120, 140, 160],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Manioc',
+                            data: [80, 95, 110, 125],
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Production (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initStockEvolutionChart() {
+            const ctx = document.getElementById('stockEvolutionChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                    datasets: [
+                        {
+                            label: 'Entrées',
+                            data: [250, 180, 300, 220, 280, 200, 350],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Sorties',
+                            data: [150, 120, 200, 180, 220, 150, 280],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Stock',
+                            data: [1000, 1060, 1160, 1200, 1260, 1310, 1380],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Quantité (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+
+{% block title %}Mon Profil - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        padding: 2rem 0;
+    }
+    
+    .profile-header {
+        margin-bottom: 2rem;
+    }
+    
+    .profile-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+    
+    .profile-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem 2rem;
+    }
+    
+    .profile-avatar {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 6px solid white;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .profile-avatar-placeholder {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-light), #bbf7d0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 6px solid white;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .info-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .info-item {
+        padding: 1.25rem;
+        background: #f8fafc;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+        background: #f0fdf4;
+        transform: translateX(5px);
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-value {
+        font-size: 1.125rem;
+        color: var(--dark-color);
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge-role {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .badge-admin {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    
+    .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+        margin: 2rem 0;
+    }
+    
+    .metadata {
+        font-size: 0.875rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container fade-in">
+    <!-- En-tête -->
+    <div class="profile-header">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'tableau_de_bord' %}" class="text-decoration-none">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="bi bi-person-circle"></i> Mon profil
+                </li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-person-circle text-success me-2"></i>
+                Mon profil
+            </h2>
+            {% if user.is_superuser %}
+                <span class="badge-role badge-admin">
+                    <i class="bi bi-shield-fill"></i> Administrateur
+                </span>
+            {% elif not user.producteur %}
+                <span class="badge-role">
+                    <i class="bi bi-gear-fill"></i> Gestionnaire
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Carte principale -->
+    <div class="profile-card">
+        <!-- En-tête de la carte -->
+        <div class="profile-card-header">
+            <h4 class="mb-0 d-flex align-items-center">
+                <i class="bi bi-info-circle me-2"></i>
+                Informations du compte
+            </h4>
+        </div>
+        
+        <!-- Corps de la carte -->
+        <div class="card-body p-4">
+            <!-- Avatar et infos basiques -->
+            <div class="row align-items-center mb-4">
+                <div class="col-md-3 text-center">
+                    {% if is_producteur and producteur.photo %}
+                        <img src="{{ producteur.photo.url }}" 
+                             alt="Photo de profil"
+                             class="profile-avatar">
+                    {% else %}
+                        <div class="profile-avatar-placeholder">
+                            <i class="bi bi-person-circle text-white" style="font-size: 4rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-person-badge"></i>
+                                    Nom complet
+                                </div>
+                                <h3 class="info-value">
+                                    {% if is_producteur %}
+                                        {{ producteur.nom }} {{ producteur.prenom }}
+                                    {% else %}
+                                        {{ user.username }}
+                                    {% endif %}
+                                </h3>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-at"></i>
+                                    Nom d'utilisateur
+                                </div>
+                                <h3 class="info-value">{{ user.username }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grille d'informations -->
+            <div class="info-grid">
+                {% if is_producteur %}
+                    <!-- Producteur -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-telephone"></i>
+                                    Téléphone
+                                </div>
+                                <p class="info-value">{{ producteur.telephone }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-envelope"></i>
+                                    Email
+                                </div>
+                                <p class="info-value">
+                                    {{ producteur.email|default:"Non renseigné" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="bi bi-geo-alt"></i>
+                            Localisation
+                        </div>
+                        <p class="info-value">
+                            {{ producteur.arrondissement.nom }}, {{ producteur.arrondissement.commune.nom }}
+                        </p>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <!-- Statistiques producteur -->
+                    <h5 class="mb-3">
+                        <i class="bi bi-bar-chart me-2"></i>
+                        Mes statistiques
+                    </h5>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">{{ producteur.parcelles.count }}</div>
+                            <div class="stat-label">Parcelles</div>
+                            <i class="bi bi-grid-3x3 text-success mt-2" style="font-size: 1.5rem;"></i>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value">{{ producteur.recoltes.count }}</div>
+                            <div class="stat-label">Récoltes</div>
+                            <i class="bi bi-basket2 text-success mt-2" style="font-size: 1.5rem;"></i>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value">
+                                {% with total=producteur.recoltes.count|default:0 %}
+                                    {% if total > 0 %}
+                                        {{ total }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <div class="stat-label">Activités</div>
+                            <i class="bi bi-activity text-success mt-2" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                    
+                {% else %}
+                    <!-- Gestionnaire/Admin -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-envelope"></i>
+                                    Email
+                                </div>
+                                <p class="info-value">
+                                    {{ user.email|default:"Non renseigné" }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">
+                                    <i class="bi bi-shield"></i>
+                                    Rôle
+                                </div>
+                                <p class="info-value">
+                                    {% if user.is_superuser %}
+                                        <span class="badge bg-danger px-3 py-2">
+                                            <i class="bi bi-shield-fill"></i> Administrateur
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-success px-3 py-2">
+                                            <i class="bi bi-gear-fill"></i> Gestionnaire
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info border-0 bg-blue-50">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle fs-5 me-2 text-blue-600"></i>
+                            <div>
+                                <h6 class="alert-heading text-blue-600 mb-2">
+                                    <i class="bi bi-building me-1"></i> Gestionnaire de la coopérative
+                                </h6>
+                                <p class="mb-0 text-blue-700">
+                                    Vous avez un accès complet aux fonctionnalités de gestion : 
+                                    entrepôts, stocks, inventaires et suivi des producteurs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Métadonnées -->
+            <div class="metadata mt-4">
+                <i class="bi bi-calendar"></i>
+                Membre depuis le {{ user.date_joined|date:"d F Y" }}
+                <span class="mx-2">•</span>
+                <i class="bi bi-clock"></i>
+                Dernière connexion : {{ user.last_login|date:"d/m/Y H:i"|default:"Jamais" }}
+            </div>
+        </div>
+        
+        <!-- Pied de la carte -->
+        <div class="card-footer bg-light py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'tableau_de_bord' %}" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Retour au tableau de bord
+                </a>
+                
+                {% if is_producteur %}
+                    <a href="#" class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>
+                        Modifier mon profil
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animation des cartes de statistiques
+    document.addEventListener('DOMContentLoaded', function() {
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('fade-in');
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

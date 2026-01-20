@@ -1,0 +1,532 @@
+{% extends 'base.html' %}
+
+{% block title %}Historique des Mouvements - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .historique-container {
+        padding: 2rem 0;
+    }
+    
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h2 {
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: var(--primary-dark);
+    }
+    
+    .stock-info-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 2px solid var(--primary-color);
+        margin-bottom: 2rem;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .info-item {
+        text-align: center;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+    
+    .info-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+    
+    .stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
+    .stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+    .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0;
+    }
+    
+    .data-table-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .table-title {
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .table-container {
+        padding: 1.5rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .table {
+        margin: 0;
+    }
+    
+    .table thead {
+        background-color: #f8fafc;
+    }
+    
+    .table th {
+        font-weight: 600;
+        color: #4b5563;
+        padding: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: #f1f5f9;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f0fdf4;
+    }
+    
+    .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .type-entree {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .type-sortie {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .quantity-cell {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    
+    .quantity-entree {
+        color: #059669;
+    }
+    
+    .quantity-sortie {
+        color: #d97706;
+    }
+    
+    .mouvement-meta {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        color: #d1d5db;
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-title {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-subtitle {
+        color: #9ca3af;
+        margin-bottom: 1.5rem;
+    }
+    
+    .table-footer {
+        background: #f8fafc;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .historique-container {
+            padding: 1rem 0;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
+            min-width: 800px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="historique-container fade-in">
+    <!-- En-tête avec navigation -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <nav aria-label="breadcrumb" class="breadcrumb-custom mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'tableau_de_bord' %}">
+                                <i class="bi bi-speedometer2"></i> Tableau de bord
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'detail_entrepot' stock.entrepot.pk %}">
+                                <i class="bi bi-building"></i> {{ stock.entrepot.nom }}
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="bi bi-clock-history"></i> Historique
+                        </li>
+                    </ol>
+                </nav>
+                
+                <h2 class="mb-0">
+                    <i class="bi bi-clock-history text-success me-2"></i>
+                    Historique des mouvements
+                </h2>
+            </div>
+            
+            <a href="{% url 'detail_entrepot' stock.entrepot.pk %}" class="btn btn-outline-success">
+                <i class="bi bi-arrow-left me-2"></i> Retour à l'entrepôt
+            </a>
+        </div>
+    </div>
+    
+    <!-- Informations du stock -->
+    <div class="stock-info-card">
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Entrepôt</div>
+                <div class="info-value">
+                    <i class="bi bi-building text-success me-1"></i>
+                    {{ stock.entrepot.nom }}
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Culture</div>
+                <div class="info-value">
+                    <span class="badge bg-success">{{ stock.type_culture }}</span>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Stock actuel</div>
+                <div class="info-value text-success">
+                    {{ stock.quantite_actuelle|floatformat:2 }} kg
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Statut</div>
+                <div class="info-value">
+                    {% if stock.est_en_alerte %}
+                        <span class="badge bg-danger">
+                            <i class="bi bi-exclamation-triangle"></i> ALERTE
+                        </span>
+                    {% else %}
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle"></i> NORMAL
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistiques des mouvements -->
+    <div class="stats-grid">
+        <div class="stat-card success">
+            <div class="stat-value">{{ mouvements.count }}</div>
+            <div class="stat-label">Total des mouvements</div>
+        </div>
+        
+        <div class="stat-card info">
+            <div class="stat-value">
+                {% for mouv in mouvements %}
+                    {% if mouv.type_mouvement == 'ENTREE' %}
+                        {{ forloop.counter }}
+                    {% endif %}
+                {% empty %}
+                    0
+                {% endfor %}
+            </div>
+            <div class="stat-label">Entrées</div>
+        </div>
+        
+        <div class="stat-card warning">
+            <div class="stat-value">
+                {% for mouv in mouvements %}
+                    {% if mouv.type_mouvement == 'SORTIE' %}
+                        {{ forloop.counter }}
+                    {% endif %}
+                {% empty %}
+                    0
+                {% endfor %}
+            </div>
+            <div class="stat-label">Sorties</div>
+        </div>
+    </div>
+    
+    <!-- Tableau de l'historique -->
+    <div class="data-table-card">
+        <div class="table-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="table-title">
+                    <i class="bi bi-list"></i>
+                    Historique complet des mouvements
+                </h5>
+                <span class="badge bg-white text-success">
+                    {{ mouvements.count }} mouvement{{ mouvements.count|pluralize }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            {% if mouvements %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date et heure</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-end">Quantité</th>
+                                <th>Motif</th>
+                                <th>Opérateur</th>
+                                <th>Récolte associée</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mouvement in mouvements %}
+                                <tr class="align-middle">
+                                    <td>
+                                        <div class="small">
+                                            <strong>{{ mouvement.date_mouvement|date:"d/m/Y" }}</strong>
+                                            <div class="text-muted">
+                                                {{ mouvement.date_mouvement|date:"H:i" }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        {% if mouvement.type_mouvement == 'ENTREE' %}
+                                            <span class="type-badge type-entree">
+                                                <i class="bi bi-arrow-down-circle"></i>
+                                                ENTRÉE
+                                            </span>
+                                        {% else %}
+                                            <span class="type-badge type-sortie">
+                                                <i class="bi bi-arrow-up-circle"></i>
+                                                SORTIE
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="text-end">
+                                        <div class="quantity-cell {% if mouvement.type_mouvement == 'ENTREE' %}quantity-entree{% else %}quantity-sortie{% endif %}">
+                                            {% if mouvement.type_mouvement == 'ENTREE' %}+{% else %}-{% endif %}
+                                            {{ mouvement.quantite|floatformat:2 }} kg
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="mouvement-meta">
+                                            <i class="bi bi-chat-left-text text-success me-1"></i>
+                                            {{ mouvement.motif }}
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="mouvement-meta">
+                                            <i class="bi bi-person text-muted me-1"></i>
+                                            {% if mouvement.operateur %}
+                                                {{ mouvement.operateur }}
+                                            {% else %}
+                                                <span class="text-muted">Non renseigné</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        {% if mouvement.recolte %}
+                                            <a href="{% url 'detail_recolte' mouvement.recolte.pk %}" 
+                                               class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-basket me-1"></i>
+                                                Voir la récolte
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Message si aucun mouvement -->
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+                    <h4 class="empty-title">Aucun mouvement enregistré</h4>
+                    <p class="empty-subtitle">
+                        Ce stock n'a pas encore d'historique de mouvements.
+                    </p>
+                    <a href="{% url 'ajouter_mouvement' stock.pk %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Ajouter le premier mouvement
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if mouvements %}
+            <div class="table-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Total des mouvements : {{ mouvements.count }}
+                    </span>
+                    <a href="{% url 'ajouter_mouvement' stock.pk %}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Nouveau mouvement
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animation des cartes
+    document.addEventListener('DOMContentLoaded', function() {
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('fade-in');
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

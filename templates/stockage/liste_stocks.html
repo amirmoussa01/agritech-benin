@@ -1,0 +1,803 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des Stocks - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stocks-container {
+        padding: 1rem 0;
+    }
+    
+    .page-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .page-title {
+        color: var(--dark-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 1.75rem;
+    }
+    
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 1rem;
+    }
+    
+    .filter-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.25rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-title {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .form-check-custom {
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .form-check-custom .form-check-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+    
+    .stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
+    .stat-card.danger::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+    .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+    }
+    
+    .data-table-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1rem 1.25rem;
+    }
+    
+    .table-title {
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .table-container {
+        padding: 1.25rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table {
+        margin: 0;
+        min-width: 800px;
+    }
+    
+    .table thead {
+        background-color: #f8fafc;
+    }
+    
+    .table th {
+        font-weight: 600;
+        color: #4b5563;
+        padding: 0.75rem;
+        border-bottom: 2px solid #e5e7eb;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        border-color: #f1f5f9;
+        font-size: 0.9rem;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .table tbody tr.alert-row {
+        background: #fef2f2;
+    }
+    
+    .entrepot-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 180px;
+    }
+    
+    .entrepot-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .culture-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        background: #f0fdf4;
+        border-radius: 16px;
+        color: var(--primary-dark);
+        font-weight: 500;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+    
+    .quantity-cell {
+        font-weight: 700;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .quantity-cell.alert {
+        color: #dc2626;
+    }
+    
+    .quantity-cell.safe {
+        color: #059669;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    
+    .status-normal {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-alert {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.375rem;
+        justify-content: center;
+        min-width: 120px;
+    }
+    
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: var(--dark-color);
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+    
+    .btn-icon:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6b7280;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-title {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+    }
+    
+    .empty-subtitle {
+        color: #9ca3af;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+    
+    /* Responsive spécifique pour tablettes */
+    @media (max-width: 1024px) {
+        .stocks-container {
+            padding: 0.75rem 0;
+        }
+        
+        .filter-card {
+            padding: 1rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .table-header {
+            padding: 0.875rem 1rem;
+        }
+        
+        .table-container {
+            padding: 1rem;
+        }
+    }
+    
+    /* Responsive spécifique pour mobiles */
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .filter-card {
+            margin-bottom: 1rem;
+        }
+        
+        .form-row {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .form-row > * {
+            width: 100% !important;
+        }
+        
+        .form-check-custom {
+            padding: 0.875rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+        }
+        
+        .table-header {
+            padding: 0.75rem 1rem;
+        }
+        
+        .table-title {
+            font-size: 0.9rem;
+        }
+        
+        .table-container {
+            padding: 0.75rem;
+        }
+        
+        .table {
+            min-width: 100%;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .entrepot-info {
+            min-width: 150px;
+        }
+        
+        .entrepot-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.875rem;
+        }
+        
+        .action-buttons {
+            min-width: 100px;
+        }
+        
+        .btn-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-lg {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+    }
+    
+    /* Très petits écrans (téléphones) */
+    @media (max-width: 576px) {
+        .stocks-container {
+            padding: 0.5rem 0;
+        }
+        
+        .page-header {
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 1.25rem;
+        }
+        
+        .filter-card {
+            padding: 0.875rem;
+        }
+        
+        .form-check-label {
+            font-size: 0.85rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+        }
+        
+        .table-header {
+            padding: 0.625rem 0.875rem;
+        }
+        
+        .table-container {
+            padding: 0.5rem;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.375rem;
+            font-size: 0.75rem;
+        }
+        
+        .culture-badge,
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .action-buttons {
+            gap: 0.25rem;
+        }
+        
+        .btn-icon {
+            width: 26px;
+            height: 26px;
+        }
+        
+        .empty-state {
+            padding: 2rem 1rem;
+        }
+        
+        .empty-icon {
+            font-size: 2.5rem;
+        }
+        
+        .empty-title {
+            font-size: 1.1rem;
+        }
+    }
+    
+    /* Mode paysage mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .stocks-container {
+            padding: 0.5rem 0;
+        }
+        
+        .filter-card {
+            padding: 0.75rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .stat-card {
+            padding: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stocks-container fade-in">
+    <!-- En-tête de page -->
+    <div class="page-header">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+            <div class="mb-2 mb-md-0">
+                <h2 class="page-title">
+                    <i class="bi bi-boxes text-success me-2"></i>
+                    Gestion des stocks
+                </h2>
+                <p class="page-subtitle mb-0">
+                    Suivez et gérez les stocks dans tous les entrepôts
+                </p>
+            </div>
+            
+            <a href="{% url 'liste_entrepots' %}" class="btn btn-success w-100 w-md-auto">
+                <i class="bi bi-building me-2"></i>
+                <span class="d-none d-md-inline">Voir les entrepôts</span>
+                <span class="d-md-none">Entrepôts</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filtres -->
+    <div class="filter-card">
+        <h6 class="filter-title">
+            <i class="bi bi-funnel me-2"></i>
+            Filtrer les stocks
+        </h6>
+        
+        <form method="get">
+            <div class="row g-2 g-md-3">
+                <!-- Type de culture -->
+                <div class="col-12 col-md-5">
+                    <label for="type_culture" class="form-label small">Type de culture</label>
+                    <select class="form-select form-select-sm" id="type_culture" name="type_culture">
+                        <option value="">Toutes les cultures</option>
+                        <option value="MAIS" {% if type_culture_filter == 'MAIS' %}selected{% endif %}>Maïs</option>
+                        <option value="SOJA" {% if type_culture_filter == 'SOJA' %}selected{% endif %}>Soja</option>
+                        <option value="ANANAS" {% if type_culture_filter == 'ANANAS' %}selected{% endif %}>Ananas</option>
+                    </select>
+                </div>
+                
+                <!-- Filtre alertes -->
+                <div class="col-12 col-md-5">
+                    <div class="form-check-custom h-100">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="alerte" 
+                               name="alerte" 
+                               value="1"
+                               {% if alerte_only %}checked{% endif %}>
+                        <label class="form-check-label" for="alerte">
+                            <i class="bi bi-exclamation-triangle text-danger"></i>
+                            <span class="d-none d-sm-inline">Afficher uniquement les stocks en alerte</span>
+                            <span class="d-sm-none">Stocks en alerte</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Bouton -->
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-success w-100 mt-2 mt-md-0">
+                        <i class="bi bi-funnel me-1 me-md-2"></i>
+                        <span class="d-none d-md-inline">Appliquer</span>
+                        <span class="d-md-none">OK</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="stats-grid">
+        <div class="stat-card success">
+            <div class="stat-value">{{ nombre_stocks }}</div>
+            <div class="stat-label">Stocks actifs</div>
+            <small class="text-muted d-block">Dans tous les entrepôts</small>
+        </div>
+        
+        <div class="stat-card danger">
+            <div class="stat-value">{{ nombre_alertes }}</div>
+            <div class="stat-label">Stocks en alerte</div>
+            <small class="text-muted d-block">Nécessitent attention</small>
+        </div>
+        
+        <div class="stat-card info">
+            <div class="stat-value">{{ stock_total|floatformat:0 }}</div>
+            <div class="stat-label">Stock total</div>
+            <small class="text-muted d-block">kg</small>
+        </div>
+        
+        <div class="stat-card warning">
+            <div class="stat-value">--</div>
+            <div class="stat-label">Valeur estimée</div>
+            <small class="text-muted d-block">En attente</small>
+        </div>
+    </div>
+    
+    <!-- Tableau des stocks -->
+    <div class="data-table-card">
+        <div class="table-header">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                <h5 class="table-title">
+                    <i class="bi bi-table"></i>
+                    Liste de tous les stocks
+                </h5>
+                <span class="badge bg-white text-success">
+                    {{ stocks|length }} stock{{ stocks|length|pluralize }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            {% if stocks %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Entrepôt</th>
+                                <th>Localisation</th>
+                                <th>Culture</th>
+                                <th class="text-end">Quantité</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stock in stocks %}
+                                <tr class="align-middle {% if stock.est_en_alerte %}alert-row{% endif %}">
+                                    <td>
+                                        <div class="entrepot-info">
+                                            <div class="entrepot-icon">
+                                                <i class="bi bi-building"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-medium small">
+                                                    {{ stock.entrepot.nom|truncatechars:15 }}
+                                                </div>
+                                                <div class="text-muted extra-small d-none d-md-block">
+                                                    {{ stock.entrepot.arrondissement.nom|truncatechars:12 }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="text-muted small">
+                                            {{ stock.entrepot.arrondissement.nom|truncatechars:10 }}
+                                            <div class="extra-small d-none d-lg-block">
+                                                {{ stock.entrepot.arrondissement.commune.nom|truncatechars:12 }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <span class="culture-badge">
+                                            <i class="bi bi-flower3"></i>
+                                            {{ stock.type_culture|truncatechars:8 }}
+                                        </span>
+                                    </td>
+                                    
+                                    <td class="text-end">
+                                        <div class="quantity-cell {% if stock.est_en_alerte %}alert{% else %}safe{% endif %}">
+                                            {{ stock.quantite_actuelle|floatformat:0 }} kg
+                                        </div>
+                                        <div class="extra-small text-muted d-none d-md-block">
+                                            Seuil: {{ stock.seuil_alerte|floatformat:0 }} kg
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        {% if stock.est_en_alerte %}
+                                            <span class="status-badge status-alert">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                <span class="d-none d-sm-inline">ALERTE</span>
+                                            </span>
+                                        {% else %}
+                                            <span class="status-badge status-normal">
+                                                <i class="bi bi-check-circle"></i>
+                                                <span class="d-none d-sm-inline">OK</span>
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        <div class="action-buttons">
+                                            <a href="{% url 'ajouter_mouvement' stock.pk %}" 
+                                               class="btn-icon"
+                                               title="Ajouter un mouvement"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-plus-circle"></i>
+                                            </a>
+                                            
+                                            <a href="{% url 'historique_mouvements' stock.pk %}" 
+                                               class="btn-icon"
+                                               title="Voir l'historique"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-clock-history"></i>
+                                            </a>
+                                            
+                                            <a href="{% url 'detail_entrepot' stock.entrepot.pk %}" 
+                                               class="btn-icon"
+                                               title="Voir l'entrepôt"
+                                               data-bs-toggle="tooltip">
+                                                <i class="bi bi-building"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Informations mobiles supplémentaires -->
+                <div class="d-md-none mt-3">
+                    <div class="alert alert-info small mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Faites défiler horizontalement pour voir toutes les colonnes
+                    </div>
+                </div>
+                
+            {% else %}
+                <!-- État vide -->
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-boxes"></i>
+                    </div>
+                    <h4 class="empty-title">Aucun stock trouvé</h4>
+                    <p class="empty-subtitle">
+                        {% if alerte_only %}
+                            Aucun stock n'est actuellement en alerte.
+                        {% elif type_culture_filter %}
+                            Aucun stock ne correspond à ce type de culture.
+                        {% else %}
+                            Aucun stock n'est enregistré dans le système.
+                        {% endif %}
+                    </p>
+                    {% if alerte_only or type_culture_filter %}
+                        <a href="{% url 'liste_stocks' %}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            Réinitialiser les filtres
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialisation des tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Animation des lignes du tableau
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                row.style.transition = 'all 0.4s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateX(0)';
+            }, index * 50);
+        });
+        
+        // Gestion du responsive pour les tooltips
+        function handleResize() {
+            if (window.innerWidth < 768) {
+                tooltipList.forEach(tooltip => {
+                    tooltip.hide();
+                });
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - AgriTech-Bénin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        max-width: 420px;
+        width: 100%;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        padding: 0.5rem 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .login-logo {
+        font-size: 3.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+    
+    .login-body {
+        padding: 2.5rem 2rem;
+        background: white;
+    }
+    
+    .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 10;
+    }
+    
+    .form-control.with-icon {
+        padding-left: 45px;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        z-index: 10;
+    }
+    
+    .login-footer {
+        text-align: center;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 1.5rem 0;
+        color: #94a3b8;
+    }
+    
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .divider span {
+        padding: 0 1rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <!-- En-tête -->
+        <div class="login-header">
+            <div class="login-logo">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <h2 class="h3 mb-2">Bienvenue</h2>
+            <p class="text-white-50 mb-0">Connectez-vous à votre compte</p>
+        </div>
+        
+        <!-- Corps du formulaire -->
+        <div class="login-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <!-- Affichage des erreurs -->
+                {% if form.errors %}
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>
+                            Identifiants incorrects. Veuillez réessayer.
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Champ utilisateur -->
+                <div class="input-group">
+                    <i class="bi bi-person-fill input-icon"></i>
+                    <input type="text" 
+                           name="username" 
+                           id="id_username" 
+                           class="form-control with-icon" 
+                           placeholder="Nom d'utilisateur"
+                           required 
+                           autofocus>
+                </div>
+                
+                <!-- Champ mot de passe -->
+                <div class="input-group">
+                    <i class="bi bi-lock-fill input-icon"></i>
+                    <input type="password" 
+                           name="password" 
+                           id="id_password" 
+                           class="form-control with-icon" 
+                           placeholder="Mot de passe"
+                           required>
+                    <button type="button" class="password-toggle" id="togglePassword">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                
+                <!-- Options -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label small" for="rememberMe">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+                    <a href="#" class="small text-primary text-decoration-none">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+                
+                <!-- Bouton de connexion -->
+                <button type="submit" class="btn btn-success w-100 py-3 fw-semibold">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                </button>
+                
+                <!-- Divider -->
+                <div class="divider">
+                    <span>ou</span>
+                </div>
+                
+                <!-- Inscription -->
+                <div class="text-center">
+                    <p class="mb-2 text-muted">Nouveau sur AgriTech ?</p>
+                    <a href="{% url 'inscription_producteur' %}" class="btn btn-outline-success w-100">
+                        <i class="bi bi-person-plus me-2"></i>Créer un compte producteur
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Footer -->
+        <div class="login-footer">
+            <small class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Pour toute assistance, contactez l'administrateur système
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('id_password');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    });
+    
+    // Focus sur le champ username
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('id_username').focus();
+    });
+</script>
+{% endblock %}
