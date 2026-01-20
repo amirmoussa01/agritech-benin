@@ -4,6 +4,7 @@ from .models import Contact
 from recoltes.models import Recolte, TypeCulture
 from stockage.models import Entrepot
 from producteurs.models import Producteur
+from django.http import JsonResponse
 
 def accueil(request):
     """Page d'accueil publique"""
@@ -54,3 +55,11 @@ def contact(request):
             messages.error(request, 'Veuillez remplir tous les champs obligatoires.')
     
     return render(request, 'pages/contact.html')
+
+def ping(request):
+    """Endpoint léger pour le monitoring (UptimeRobot, Cron-Job, etc.)"""
+    return JsonResponse({
+        'status': 'ok',
+        'message': 'AgriTech-Benin is alive',
+        'service': 'running'
+    })
