@@ -11,5 +11,8 @@ python manage.py collectstatic --no-input
 # Appliquer les migrations
 python manage.py migrate
 
-# Charger les données initiales (seulement si la base est vide)
-python manage.py load_initial_data
+# Charger les données initiales (si le fichier existe ET si la base est vide)
+if [ -f "data.json" ]; then
+    echo "🔄 Vérification et chargement des données initiales..."
+    python manage.py loaddata data.json || echo "⚠️ Données déjà présentes ou erreur ignorée."
+fi
