@@ -21,12 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c8!g$#w(gf3h^k^9(9#$1e_iy2ie_4s_z-5k(!^ik!w%h62m2e'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-c8!g$#w(gf3h^k^9(9#$1e_iy2ie_4s_z-5k(!^ik!w%h62m2e')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.onrender.com',  # Pour permettre tous les sous-domaines Render
+]
 
 
 # Application definition
@@ -47,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ajouté pour servir les fichiers statiques en production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,9 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+# Configuration pour le français (utile pour le Bénin)
+LANGUAGE_CODE = 'fr-fr'
+TIME_ZONE = 'Africa/Porto-Novo'
 
 USE_I18N = True
 
@@ -125,8 +130,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-]
+] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Configuration WhiteNoise pour servir les fichiers statiques en production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -136,10 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuration des fichiers média (images uploadées)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-# Configuration pour le français (optionnel mais utile pour le Bénin)
-LANGUAGE_CODE = 'fr-fr'
-TIME_ZONE = 'Africa/Porto-Novo' 
 
 # Configuration de l'authentification
 # Redirection après connexion réussie
