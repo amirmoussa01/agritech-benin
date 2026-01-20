@@ -174,4 +174,3 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # Timeout pour réinitialisation de mot de passe (en secondes)
 PASSWORD_RESET_TIMEOUT = 3600  # 1 heure
 
-#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
