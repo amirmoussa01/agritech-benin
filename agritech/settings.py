@@ -160,12 +160,13 @@ LOGOUT_REDIRECT_URL = '/login/'
 # Clé API Brevo (depuis les variables d'environnement)
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
 
-# En développement : afficher les emails dans la console
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
+# Forcer l'utilisation de Brevo si la clé est présente
+if BREVO_API_KEY:
     # En production : utiliser l'API Brevo
     EMAIL_BACKEND = 'agritech.email_backend.BrevoEmailBackend'
+else:
+    # En développement : afficher les emails dans la console
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Email par défaut
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@agritech-benin.com')
