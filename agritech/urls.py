@@ -27,6 +27,9 @@ urlpatterns = [
     
     # URLs des pages publiques (accueil et contact) - DOIT ÊTRE EN PREMIER
     path('', include('pages.urls')),
+
+    # TOUTES les autres URLs d'auth (mot de passe oublié, etc.)
+    path('', include('django.contrib.auth.urls')), 
     
     # URL pour la page de connexion
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
