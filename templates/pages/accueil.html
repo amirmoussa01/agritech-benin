@@ -612,6 +612,203 @@
                 width: 100%;
             }
         }
+        /* Notification pour le professeur */
+        .teacher-notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            animation: slideInRight 0.5s ease-out;
+            display: none;
+            border: 3px solid var(--primary-green);
+        }
+
+        .teacher-notification.show {
+            display: block;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-content {
+            position: relative;
+            padding: 20px;
+        }
+
+        .notification-content .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 1.5em;
+            height: 1.5em;
+            padding: 0.25em;
+            background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border: 0;
+            border-radius: 0.375rem;
+            opacity: 0.5;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .notification-content .btn-close:hover {
+            opacity: 0.75;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-content .btn-close:focus {
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+            opacity: 1;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-green);
+        }
+
+        .notification-header i {
+            font-size: 1.8rem;
+        }
+
+        .notification-header h5 {
+            margin: 0;
+            color: var(--dark-green);
+            font-weight: 700;
+        }
+
+        .notification-body {
+            font-size: 0.9rem;
+        }
+
+        .credentials-section {
+            margin: 15px 0;
+        }
+
+        .credentials-section h6 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credential-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-green);
+            transition: all 0.3s;
+        }
+
+        .credential-card:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .credential-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .credential-header i {
+            font-size: 1.2rem;
+        }
+
+        .credential-info {
+            font-size: 0.85rem;
+        }
+
+        .credential-info span {
+            color: #666;
+            font-weight: 500;
+            min-width: 100px;
+            display: inline-block;
+        }
+
+        .credential-info code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #d63384;
+        }
+
+        /* Badge flottant */
+        .floating-badge {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 9998;
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+            animation: pulseBadge 2s infinite;
+            transition: all 0.3s;
+        }
+
+        .floating-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% {
+                box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+            }
+            50% {
+                box-shadow: 0 5px 25px rgba(40, 167, 69, 0.7);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .teacher-notification {
+                width: 90%;
+                right: 5%;
+                left: 5%;
+                top: 70px;
+            }
+            
+            .floating-badge {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .credential-info span {
+                min-width: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -651,6 +848,118 @@
             </div>
         </div>
     </nav>
+    <!-- Notification pour le professeur - Version compacte -->
+    <div class="teacher-notification" id="teacherNotification">
+        <div class="notification-content">
+            <button type="button" class="btn-close" id="closeNotification"></button>
+            <div class="notification-header">
+                <i class="fas fa-user-graduate text-warning me-2"></i>
+                <h5 class="mb-0">Amir Moussa</h5>
+            </div>
+            
+            <div class="notification-body">
+                <p class="text-muted small mb-3">
+                    <i class="fas fa-graduation-cap text-info me-1"></i>
+                    Projet académique - Évaluation
+                </p>
+                
+                <div class="credentials-section">
+                    <h6 class="section-title">
+                        <i class="fas fa-key text-primary me-2"></i>
+                        Identifiants de test
+                    </h6>
+                    
+                    <!-- Tableau compact pour les identifiants -->
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless mb-3">
+                            <tbody>
+                                <tr>
+                                    <td class="align-middle" width="30">
+                                        <i class="fas fa-user-tie text-success"></i>
+                                    </td>
+                                    <td class="align-middle">
+                                        <small class="text-muted d-block">Producteur</small>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">User</span>
+                                            <code class="small">producteur</code>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">Pass</span>
+                                            <code class="small">prod12345</code>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-end" width="80">
+                                        <a href="{% url 'login' %}" class="btn btn-success btn-sm px-2 py-1">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle">
+                                        <i class="fas fa-user-cog text-warning"></i>
+                                    </td>
+                                    <td class="align-middle">
+                                        <small class="text-muted d-block">Gestionnaire</small>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">User</span>
+                                            <code class="small">gestionnaire</code>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">Pass</span>
+                                            <code class="small">gestionnaire12345</code>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <a href="{% url 'login' %}" class="btn btn-warning btn-sm px-2 py-1 text-white">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle">
+                                        <i class="fas fa-user-shield text-danger"></i>
+                                    </td>
+                                    <td class="align-middle">
+                                        <small class="text-muted d-block">Administrateur</small>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">User</span>
+                                            <code class="small">admin</code>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-1">Pass</span>
+                                            <code class="small">1234567890</code>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-end">
+                                        <a href="{% url 'login' %}" class="btn btn-danger btn-sm px-2 py-1">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Contact compact -->
+                    <div class="contact-info mt-3 pt-3 border-top">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-envelope text-success me-2" style="font-size: 0.9rem;"></i>
+                            <span class="small">moussaamir979@gmail.com</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-phone text-success me-2" style="font-size: 0.9rem;"></i>
+                            <span class="small">2290146157929</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badge flottant pour ré-afficher la notification -->
+    <div class="floating-badge" id="floatingBadge" title="Informations pour le professeur">
+        <i class="fas fa-user-graduate"></i>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1162,6 +1471,69 @@
             
             galleryImages.forEach(img => imageObserver.observe(img));
         });
+
+        // Notification pour le professeur
+        document.addEventListener('DOMContentLoaded', function() {
+            const notification = document.getElementById('teacherNotification');
+            const closeBtn = document.getElementById('closeNotification');
+            const floatingBadge = document.getElementById('floatingBadge');
+            
+            // Afficher la notification après 1 secondes
+            setTimeout(() => {
+                notification.classList.add('show');
+                
+                // Sauvegarder dans localStorage que l'utilisateur a vu la notification
+                localStorage.setItem('teacherNotificationShown', 'true');
+            }, 1000);
+            
+            // Fermer la notification
+            closeBtn.addEventListener('click', function() {
+                notification.classList.remove('show');
+            });
+            
+            // Ré-afficher la notification via le badge flottant
+            floatingBadge.addEventListener('click', function() {
+                notification.classList.add('show');
+            });
+            
+            // Fermer en cliquant à l'extérieur
+            document.addEventListener('click', function(event) {
+                if (notification.classList.contains('show') && 
+                    !notification.contains(event.target) && 
+                    !floatingBadge.contains(event.target)) {
+                    notification.classList.remove('show');
+                }
+            });
+            
+            // Ajout d'un cookie pour se souvenir de la fermeture
+            if (localStorage.getItem('teacherNotificationClosed') === 'true') {
+                notification.classList.remove('show');
+            }
+            
+            closeBtn.addEventListener('click', function() {
+                localStorage.setItem('teacherNotificationClosed', 'true');
+            });
+            
+            // Fonction pour copier les identifiants
+            document.querySelectorAll('.credential-info code').forEach(code => {
+                code.style.cursor = 'pointer';
+                code.title = 'Cliquer pour copier';
+                
+                code.addEventListener('click', function() {
+                    const textToCopy = this.textContent;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const originalText = this.textContent;
+                        this.textContent = 'Copié !';
+                        this.style.color = '#28a745';
+                        
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.style.color = '#d63384';
+                        }, 2000);
+                    });
+                });
+            });
+        });
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -1170,3 +1542,4 @@
     </script>
 </body>
 </html>
+
