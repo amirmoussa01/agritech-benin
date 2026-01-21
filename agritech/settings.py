@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -160,18 +161,18 @@ LOGOUT_REDIRECT_URL = '/login/'
 # Clé API Brevo (depuis les variables d'environnement)
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
 
-# Forcer l'utilisation de Brevo si la clé est présente
+# Configuration du backend email
 if BREVO_API_KEY:
-    # En production : utiliser l'API Brevo
     EMAIL_BACKEND = 'agritech.email_backend.BrevoEmailBackend'
+    print("📧 Backend email: Brevo API")
 else:
-    # En développement : afficher les emails dans la console
+    # Fallback vers console si pas de clé
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    print("⚠️ Pas de clé Brevo - emails dans la console")
 
 # Email par défaut
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@agritech-benin.com')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Agri-TechBenin<moussaamir12346@gmail.com>')
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Timeout pour réinitialisation de mot de passe (en secondes)
 PASSWORD_RESET_TIMEOUT = 3600  # 1 heure
-

@@ -28,8 +28,39 @@ urlpatterns = [
     # URLs des pages publiques (accueil et contact) - DOIT ÊTRE EN PREMIER
     path('', include('pages.urls')),
 
-    # TOUTES les autres URLs d'auth (mot de passe oublié, etc.)
-    path('', include('django.contrib.auth.urls')), 
+    # ===== RÉINITIALISATION DE MOT DE PASSE =====
+    
+    # Étape 1 : Demander la réinitialisation (formulaire email)
+    path('password-reset/', 
+         auth_views.PasswordResetView.as_view(
+             template_name='registration/password_reset_form.html',
+             email_template_name='registration/password_reset_email.html',
+             subject_template_name='registration/password_reset_subject.txt',
+             success_url='/password-reset/done/'
+         ), 
+         name='password_reset'),
+    
+    # Étape 2 : Confirmation d'envoi de l'email
+    path('password-reset/done/', 
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='registration/password_reset_done.html'
+         ), 
+         name='password_reset_done'),
+    
+    # Étape 3 : Formulaire de nouveau mot de passe (lien dans l'email)
+    path('password-reset-confirm/<uidb64>/<token>/', 
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='registration/password_reset_confirm.html',
+             success_url='/password-reset-complete/'
+         ), 
+         name='password_reset_confirm'),
+    
+    # Étape 4 : Confirmation finale
+    path('password-reset-complete/', 
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='registration/password_reset_complete.html'
+         ), 
+         name='password_reset_complete'),
     
     # URL pour la page de connexion
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
