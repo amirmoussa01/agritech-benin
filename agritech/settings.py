@@ -176,6 +176,3 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Timeout pour réinitialisation de mot de passe (en secondes)
 PASSWORD_RESET_TIMEOUT = 3600  # 1 heure
-
-# (pendant le développement)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
