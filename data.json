@@ -68,16 +68,16 @@
 {
   "model": "auth.user",
   "fields": {
-    "password": "pbkdf2_sha256$1000000$bGRhkPODYrWiavqn40nIIn$JsvdjOmWVXy5jHjlchT+NvOiPc5bUAseVF6U0uvA6hw=",
-    "last_login": "2026-01-20T09:42:18.719Z",
+    "password": "pbkdf2_sha256$1000000$lcGpKjw8B0P5XkfiWee0vb$f/c4mo9HKGP2n3bGW+A3exloEnGGiWXpq4TYUwVKQ0g=",
+    "last_login": "2026-01-22T00:37:51Z",
     "is_superuser": true,
-    "username": "Amir",
+    "username": "admin",
     "first_name": "",
     "last_name": "",
     "email": "moussaamir979@gmail.com",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2026-01-19T09:20:06.999Z",
+    "date_joined": "2026-01-19T09:20:06Z",
     "groups": [],
     "user_permissions": []
   }
@@ -85,16 +85,16 @@
 {
   "model": "auth.user",
   "fields": {
-    "password": "pbkdf2_sha256$1000000$LuZIKq3pKjZzqxXAIQ2LcJ$awrPVIw8TgZ+Bzz48Cc8r8pMyijRuiN8U696tvFiD2E=",
-    "last_login": "2026-01-20T11:01:17.751Z",
+    "password": "pbkdf2_sha256$1000000$JuiyIwe2cAej4sc3PNei9b$GBrqOPMbYcvtx7PCUw/FFyO45Kay1fq3DbcHUXmQS8w=",
+    "last_login": "2026-01-20T11:01:17Z",
     "is_superuser": false,
-    "username": "AlAmir",
+    "username": "producteur",
     "first_name": "Amir",
     "last_name": "Moussa",
     "email": "moussaamir12346@gmail.com",
     "is_staff": false,
     "is_active": true,
-    "date_joined": "2026-01-19T11:43:46.510Z",
+    "date_joined": "2026-01-19T11:43:46Z",
     "groups": [
       [
         "Producteurs"
@@ -106,10 +106,10 @@
 {
   "model": "auth.user",
   "fields": {
-    "password": "pbkdf2_sha256$1000000$in6wLinLWwSdomvqyk9sdY$tDksDw/RqZU8Qhl/gzWIL4gy8lyJTM9J2iPuHdE7Ztc=",
-    "last_login": "2026-01-20T09:48:22.561Z",
+    "password": "pbkdf2_sha256$1000000$0DLasuiYrpAHDhYS0DO4oC$57/0RYGF0iRvwbES+n2c+P3cz4Vs4QjLURVVkHxvN5g=",
+    "last_login": "2026-01-20T09:48:22Z",
     "is_superuser": false,
-    "username": "gestionnaire1",
+    "username": "gestionnaire",
     "first_name": "Omer",
     "last_name": "AIDEGO",
     "email": "omerexample@gmail.com",
@@ -143,6 +143,14 @@
       ]
     ],
     "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2i7g1ck5o492c9i9hlqacpjl20wn34db",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pCBUigu3XsGwgyDVA0kpV0Z765NutDtf-_9lwhxW0vYOi9hTuIslDj9bhjpwXUH6R7rrUlqdV1mlLsiD9rltSV-Xg7376DEXr71SM5pAsPJW0RLQ7KkDRImoAx6sHkCx9ZMLitkY7TxwOAjeTVCVFa8P_AWN8c:1viikR:QXAAl_p1Nvjwn2dQ2mhwbBjVi1UrtJB8A6XeTE8v3P8",
+    "expire_date": "2026-02-05T00:40:31.168Z"
   }
 },
 {
@@ -236,7 +244,7 @@
   "pk": 2,
   "fields": {
     "user": [
-      "AlAmir"
+      "producteur"
     ],
     "nom": "Moussa",
     "prenom": "Amir",
@@ -391,7 +399,7 @@
     "capacite_max": "10000.00",
     "adresse": "Route de Porto-Novo, Zone industrielle",
     "gestionnaire": [
-      "gestionnaire1"
+      "gestionnaire"
     ],
     "photo": "",
     "date_creation": "2026-01-19T13:57:54.706Z"
@@ -514,7 +522,7 @@
   "fields": {
     "action_time": "2026-01-19T11:18:30.281Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -532,7 +540,7 @@
   "fields": {
     "action_time": "2026-01-19T11:18:58.046Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -550,7 +558,7 @@
   "fields": {
     "action_time": "2026-01-19T11:24:21.238Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -568,7 +576,7 @@
   "fields": {
     "action_time": "2026-01-19T11:24:40.128Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -586,7 +594,7 @@
   "fields": {
     "action_time": "2026-01-19T11:25:06.026Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -604,7 +612,7 @@
   "fields": {
     "action_time": "2026-01-19T11:26:18.337Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -622,7 +630,7 @@
   "fields": {
     "action_time": "2026-01-19T11:27:41.107Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "recoltes",
@@ -640,7 +648,7 @@
   "fields": {
     "action_time": "2026-01-19T11:27:52.896Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "recoltes",
@@ -658,7 +666,7 @@
   "fields": {
     "action_time": "2026-01-19T11:28:01.617Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "recoltes",
@@ -676,7 +684,7 @@
   "fields": {
     "action_time": "2026-01-19T11:30:41.768Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -694,7 +702,7 @@
   "fields": {
     "action_time": "2026-01-19T11:31:59.819Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -712,7 +720,7 @@
   "fields": {
     "action_time": "2026-01-19T11:33:14.118Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "recoltes",
@@ -730,7 +738,7 @@
   "fields": {
     "action_time": "2026-01-19T11:57:59.201Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -748,7 +756,7 @@
   "fields": {
     "action_time": "2026-01-19T11:59:39.461Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -766,7 +774,7 @@
   "fields": {
     "action_time": "2026-01-19T12:00:29.873Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -784,7 +792,7 @@
   "fields": {
     "action_time": "2026-01-19T12:23:39.868Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -802,7 +810,7 @@
   "fields": {
     "action_time": "2026-01-19T13:57:54.711Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -820,7 +828,7 @@
   "fields": {
     "action_time": "2026-01-19T14:29:50.443Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -838,7 +846,7 @@
   "fields": {
     "action_time": "2026-01-19T14:30:12.471Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -856,7 +864,7 @@
   "fields": {
     "action_time": "2026-01-19T14:30:29.756Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -874,7 +882,7 @@
   "fields": {
     "action_time": "2026-01-19T14:51:26.527Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -892,7 +900,7 @@
   "fields": {
     "action_time": "2026-01-19T14:53:11.510Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -910,7 +918,7 @@
   "fields": {
     "action_time": "2026-01-19T14:54:03.751Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -928,7 +936,7 @@
   "fields": {
     "action_time": "2026-01-19T15:12:33.841Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "auth",
@@ -946,7 +954,7 @@
   "fields": {
     "action_time": "2026-01-19T15:16:27.354Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "producteurs",
@@ -964,7 +972,7 @@
   "fields": {
     "action_time": "2026-01-19T15:22:16.486Z",
     "user": [
-      "Amir"
+      "admin"
     ],
     "content_type": [
       "stockage",
@@ -974,6 +982,150 @@
     "object_repr": "ENTREE - 600.00kg - Soja - Entrep⌠t Central Cotonou (6000.00kg)",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Quantite\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2026-01-22T00:38:26.028Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "3",
+    "object_repr": "gestionnaire",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2026-01-22T00:38:44.825Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "3",
+    "object_repr": "gestionnaire",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2026-01-22T00:39:04.891Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "2",
+    "object_repr": "producteur",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2026-01-22T00:39:24.182Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "2",
+    "object_repr": "producteur",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2026-01-22T00:39:47.233Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "admin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2026-01-22T00:40:10.930Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "Amir",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2026-01-22T00:40:31.144Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "Amir",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2026-01-22T00:40:41.018Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "admin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Username\"]}}]"
   }
 }
 ]

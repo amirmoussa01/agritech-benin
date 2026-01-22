@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,15 +84,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'agritech.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# ======================================================================
+# Database - PostgreSQL en production, SQLite en local
+# ======================================================================
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get('DATABASE_URL'):
+    # PRODUCTION : PostgreSQL sur Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+    print("Base de données: PostgreSQL (Production)")
+else:
+    # DÉVELOPPEMENT LOCAL : SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    print("Base de données: SQLite (Développement local)")
 
 
 # Password validation
@@ -156,7 +171,9 @@ LOGIN_URL = '/login/'
 # URL de déconnexion
 LOGOUT_REDIRECT_URL = '/login/'
 
-# Configuration Email
+# ======================================================================
+# Configuration Email avec Brevo
+# ======================================================================
 
 # Clé API Brevo (depuis les variables d'environnement)
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
@@ -171,7 +188,7 @@ else:
     print("⚠️ Pas de clé Brevo - emails dans la console")
 
 # Email par défaut
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Agri-TechBenin<moussaamir12346@gmail.com>')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'moussaamir12346@gmail.com')
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Timeout pour réinitialisation de mot de passe (en secondes)
