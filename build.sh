@@ -11,28 +11,41 @@ python manage.py collectstatic --no-input
 echo "🔄 Application des migrations..."
 python manage.py migrate
 
-# Charger les données initiales UNIQUEMENT si la base est vide
+# FORCER le chargement des données à CHAQUE déploiement
 if [ -f "data.json" ]; then
-    echo "🔍 Vérification de la base de données..."
+    echo "🔄 CHARGEMENT FORCÉ des données depuis data.json..."
     
-    # Compter le nombre d'utilisateurs
-    USER_COUNT=$(python -c "
+    # Vider complètement la base de données
+    echo "⚠️ Suppression des anciennes données..."
+    python manage.py flush --no-input
+    
+    # Recréer les tables (au cas où)
+    echo "🔄 Re-application des migrations..."
+    python manage.py migrate
+    
+    # Charger les données
+    echo "📥 Chargement des données..."
+    python manage.py loaddata data.json
+    
+    # Vérifier le nombre d'utilisateurs chargés
+    echo "🔍 Vérification..."
+    python -c "
 import django
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agritech.settings')
 django.setup()
 from django.contrib.auth.models import User
-print(User.objects.count())
-" 2>/dev/null || echo "0")
+from producteurs.models import Producteur
+from recoltes.models import Recolte
+print(f'✅ Utilisateurs: {User.objects.count()}')
+print(f'✅ Producteurs: {Producteur.objects.count()}')
+print(f'✅ Récoltes: {Recolte.objects.count()}')
+" || echo "⚠️ Impossible de vérifier les données"
     
-    if [ "$USER_COUNT" = "0" ]; then
-        echo "📥 Base de données vide - Chargement des données initiales..."
-        python manage.py loaddata data.json && echo "✅ Données chargées avec succès !" || echo "⚠️ Erreur lors du chargement (peut-être déjà chargé)"
-    else
-        echo "✅ Base de données déjà initialisée ($USER_COUNT utilisateurs)"
-    fi
+    echo "✅ Données chargées avec succès !"
 else
-    echo "⚠️ Fichier data.json non trouvé - pas de chargement de données"
+    echo "❌ ERREUR: Fichier data.json non trouvé !"
+    echo "⚠️ La base de données sera vide."
 fi
 
 echo "✅ Build terminé avec succès !"
